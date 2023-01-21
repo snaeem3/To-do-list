@@ -7,7 +7,28 @@
     <title>To-do List</title>
   </head>
   <body>
-    <div id="content"></div>
+    <main>
+      <div id="sidebar">
+        <h1>To-do List</h1>
+        <ul id="sidebar-main-buttons">
+          <li>General</li>
+          <li>Today</li>
+          <li>Upcoming</li>
+          <li>Completed</li>
+        </ul>
+        <div id="project-container">
+          <h2>Projects</h2>
+          <ul id="project-list"></ul>
+        </div>
+        <button id="newProjectBtn">Create Project</button>
+      </div>
+      <div id="content-container">
+        <h1 id="content-header"></h1>
+        <button id="newTaskBtn">New Task</button>
+        <h2 id="content-description"></h2>
+        <div id="content-body"></div>
+      </div>
+    </main>
     <script src="main.js" defer></script>
   </body>
 </html>
