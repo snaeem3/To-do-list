@@ -1,4 +1,4 @@
-// console.log('Hello world');
+import './styles.css';
 import * as toDoItemModule from './todoListItem.js';
 import * as projectModule from './project.js';
 import * as projectController from './projectController.js';

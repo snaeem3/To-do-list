@@ -38,7 +38,9 @@ function loadMainContent(projectName = 'General') {
       const checkBox = createCheckBox(project, task);
       const taskName = document.createElement('h3');
       taskName.textContent = task.getTitle();
+      taskName.classList.add('task-name');
       const taskDescription = document.createElement('p');
+      taskDescription.classList.add('task-description');
       taskDescription.textContent = task.getDescription();
       const taskDueDate = document.createElement('p');
       taskDueDate.textContent = task.getDueDate();
@@ -48,9 +50,7 @@ function loadMainContent(projectName = 'General') {
       deleteTaskBtn.textContent = 'Delete';
 
       checkBox.addEventListener('change', (event) => {
-        // Need to test
         task.toggleComplete();
-        loadMainContent(projectName);
       });
 
       //   editTaskBtn.addEventListener('click', loadTaskEdit(task));
@@ -86,6 +86,10 @@ function loadMainContent(projectName = 'General') {
       newCheckBox.setAttribute('type', 'checkbox');
       newCheckBox.setAttribute(
         'id',
+        `checkBox-${inputProject.getToDoIndex(inputTask.getTitle())}`
+      );
+      newCheckBox.setAttribute(
+        'name',
         `checkBox-${inputProject.getToDoIndex(inputTask.getTitle())}`
       );
       return newCheckBox;

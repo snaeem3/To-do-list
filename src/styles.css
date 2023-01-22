@@ -1,0 +1,58 @@
+@import url("https://fonts.googleapis.com/css2?family=Raleway&display=swap");
+
+:root {
+  --color-shadow: grey;
+  --section-padding: 8px;
+  --section-margin: 8px;
+  --border-radius-default: 0.75rem;
+  --primary-color: #00ffff;
+  --primary-color-dark: #008181;
+  --shade-color: #494949da;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Raleway", sans-serif;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: 100%;
+}
+
+button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 32px;
+  padding: var(--section-padding) calc(var(--section-padding) * 2);
+  text-decoration: none;
+  font-size: 1.5rem;
+  transition-duration: 0.2s;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: var(--primary-color-dark);
+}
+
+main {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+#content-container {
+  grid-column: 2 / 4;
+}
+
+input:checked ~ .task-name,
+input:checked ~ .task-description {
+  text-decoration: line-through;
+}
