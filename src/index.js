@@ -83,3 +83,5 @@ projectController.addProject(project2);
 
 displayController.loadSideBar();
 displayController.loadMainContent(project1.getProjectTitle());
+displayController.loadDefaultEventListeners();
+// displayController.loadTaskPopup();

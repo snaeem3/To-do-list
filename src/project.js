@@ -38,6 +38,7 @@ export const project = (
     setToDoArray,
     addToDoItem,
     removeToDoItem,
+    getToDoIndex,
     numTasks,
   };
 };
