@@ -12,9 +12,9 @@ import * as displayController from './displayController';
 // );
 
 const toDoItem1 = toDoItemModule.toDoItem(
-  'b',
+  'buy groceries',
   'eggs and milk',
-  '2/1/23',
+  '2023-01-31',
   'high',
   true
 );
@@ -22,7 +22,7 @@ const toDoItem1 = toDoItemModule.toDoItem(
 const toDoItem2 = toDoItemModule.toDoItem(
   'clean kitchen',
   'microwave and oven',
-  '5/3/23',
+  '2023-01-31',
   'normal',
   false
 );
@@ -30,7 +30,7 @@ const toDoItem2 = toDoItemModule.toDoItem(
 const toDoItem3 = toDoItemModule.toDoItem(
   'feed dog',
   'bone',
-  '3/3/23',
+  '2024-01-31',
   'high',
   false
 );

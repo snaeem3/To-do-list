@@ -56,3 +56,21 @@ input:checked ~ .task-name,
 input:checked ~ .task-description {
   text-decoration: line-through;
 }
+
+#task-form {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  padding: var(--section-padding);
+  transform: translate(-50%, -50%);
+  width: 50%;
+  background: lightcyan;
+  display: flex;
+  flex-direction: column;
+}
+
+.top-right {
+  position: absolute;
+  right: 0;
+  top: 0;
+}

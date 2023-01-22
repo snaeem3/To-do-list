@@ -23,7 +23,7 @@ export const toDoItem = (
   const getDescription = () => description;
   const getDueDate = () => dueDate;
   const getPriority = () => priority;
-  const getComplete = () => complete;
+  const isComplete = () => complete;
 
   const setTitle = (value) => (title = value);
   const setDescription = (value) => (description = value);
@@ -37,7 +37,7 @@ export const toDoItem = (
     getDescription,
     getDueDate,
     getPriority,
-    getComplete,
+    isComplete,
     setTitle,
     setDescription,
     setDueDate,
