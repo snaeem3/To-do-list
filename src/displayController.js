@@ -60,8 +60,9 @@ function loadMainContent(projectName = 'General') {
         task.toggleComplete();
       });
 
-      //   editTaskBtn.addEventListener('click', loadTaskEdit(task));
-      //   function loadTaskEdit(taskToLoad) {}
+      editTaskBtn.addEventListener('click', (event) => {
+        loadTaskPopup(task);
+      });
 
       deleteTaskBtn.addEventListener('click', (event) => {
         console.log(project.getProjectTitle());
@@ -105,7 +106,7 @@ function loadMainContent(projectName = 'General') {
   }
 }
 
-function loadTaskPopup() {
+function loadTaskPopup(task) {
   newTaskBtn.setAttribute('disabled', true);
 
   const taskPopup = document.createElement('div');
@@ -126,6 +127,12 @@ function loadTaskPopup() {
 
   // Priority Input - TO ADD
 
+  // if an input task was given (edit button clicked)
+  if (task !== undefined) {
+    nameInput.value = task.getTitle();
+    dateInput.value = task.getDueDate();
+  }
+
   const submitTaskBtn = document.createElement('button');
   submitTaskBtn.setAttribute('type', 'submit');
   submitTaskBtn.setAttribute('value', 'Submit');
@@ -141,8 +148,14 @@ function loadTaskPopup() {
       'placeholder priority',
       false
     );
-    // add the task to the current project
-    currentProject.addToDoItem(newToDoItem);
+    if (task === undefined) {
+      // add the task to the current project
+      currentProject.addToDoItem(newToDoItem);
+    } else {
+      // update the task in the current project
+      task.setTitle(nameInput.value);
+      task.setDueDate(dateInput.value);
+    }
     console.log(currentProject.getProjectTitle);
     loadMainContent(currentProject.getProjectTitle());
     closeTaskPopup(taskPopup);
