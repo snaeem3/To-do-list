@@ -1,6 +1,7 @@
 import * as projectController from './projectController.js';
 import * as toDoItemModule from './todoListItem.js';
 
+const body = document.querySelector('body');
 const projectList = document.querySelector('#project-list');
 const contentHeader = document.querySelector('#content-header');
 const contentDescription = document.querySelector('#content-description');
@@ -21,7 +22,15 @@ function loadSideBar() {
     projectNames.forEach((projectName) => {
       const projectElement = document.createElement('li');
       projectElement.classList.add('project');
-      projectElement.textContent = projectName;
+      const projectBtn = document.createElement('button');
+      projectBtn.classList.add('project-name-btn');
+      projectBtn.textContent = projectName;
+      projectBtn.addEventListener('click', () => {
+        setCurrentProject(projectName);
+        loadMainContent(projectName);
+      });
+
+      projectElement.appendChild(projectBtn);
       projectList.appendChild(projectElement);
     });
   }
@@ -106,6 +115,48 @@ function loadMainContent(projectName = 'General') {
   }
 }
 
+function loadProjectPopup(project) {
+  newProjectBtn.setAttribute('disabled', true);
+
+  const projectPopup = document.createElement('div');
+  const projectForm = document.createElement('form');
+  projectForm.setAttribute('id', 'project-form');
+
+  const nameInput = document.createElement('input');
+  setInputValues(
+    nameInput,
+    'text',
+    'project-name',
+    'project-name',
+    'Project Name',
+    true
+  );
+  const nameLabel = createLabel('Project Name', nameInput);
+
+  const descriptionInput = document.createElement('textarea');
+  setInputValues(
+    descriptionInput,
+    'text',
+    'descriptionInput',
+    'descriptionInput',
+    'Project Description',
+    false
+  );
+  const descriptionLabel = createLabel('Project Description', descriptionInput);
+
+  const submitBtn = document.createElement('button');
+
+  projectForm.append(
+    nameLabel,
+    nameInput,
+    descriptionLabel,
+    descriptionInput,
+    submitBtn
+  );
+  projectPopup.append(projectForm);
+  body.append(projectPopup);
+}
+
 function loadTaskPopup(task) {
   newTaskBtn.setAttribute('disabled', true);
 
@@ -181,29 +232,22 @@ function loadTaskPopup(task) {
 
   taskPopup.append(taskForm);
 
-  contentBody.append(taskPopup);
+  body.append(taskPopup);
+}
 
-  function setInputValues(
-    input,
-    type,
-    name,
-    id,
-    placeholder,
-    required = false
-  ) {
-    input.setAttribute('type', type);
-    input.setAttribute('name', name);
-    input.setAttribute('id', id);
-    input.setAttribute('placeholder', placeholder);
-    input.required = required;
-  }
+function setInputValues(input, type, name, id, placeholder, required = false) {
+  input.setAttribute('type', type);
+  input.setAttribute('name', name);
+  input.setAttribute('id', id);
+  input.setAttribute('placeholder', placeholder);
+  input.required = required;
+}
 
-  function createLabel(text, inputName) {
-    const label = document.createElement('label');
-    label.textContent = text;
-    label.htmlFor = inputName;
-    return label;
-  }
+function createLabel(text, inputName) {
+  const label = document.createElement('label');
+  label.textContent = text;
+  label.htmlFor = inputName;
+  return label;
 }
 
 function closeTaskPopup(popup) {
@@ -220,6 +264,10 @@ function clearContent(div) {
 function loadDefaultEventListeners() {
   newTaskBtn.addEventListener('click', (event) => {
     loadTaskPopup();
+  });
+
+  newProjectBtn.addEventListener('click', (event) => {
+    loadProjectPopup();
   });
 }
 
