@@ -1,5 +1,6 @@
 import * as projectController from './projectController.js';
 import * as toDoItemModule from './todoListItem.js';
+import * as projectModule from './project.js';
 
 const body = document.querySelector('body');
 const projectList = document.querySelector('#project-list');
@@ -16,6 +17,7 @@ function setCurrentProject(projectName) {
 }
 
 function loadSideBar() {
+  clearContent(projectList);
   loadProjects(projectController.getProjectNames());
 
   function loadProjects(projectNames) {
@@ -144,14 +146,37 @@ function loadProjectPopup(project) {
   );
   const descriptionLabel = createLabel('Project Description', descriptionInput);
 
-  const submitBtn = document.createElement('button');
+  const submitProjectBtn = createSubmitBtn();
+
+  projectForm.onsubmit = (event) => {
+    console.log(`Form submitted`);
+    event.preventDefault();
+    const newProject = projectModule.project(
+      nameInput.value,
+      descriptionInput.value
+    );
+
+    if (project === undefined) {
+      console.warn('No project given');
+      projectController.addProject(newProject);
+    } else {
+      projectController.projectArray[
+        projectController.projectIndex(currentProject)
+      ] = newProject;
+    }
+
+    loadSideBar();
+    closePopup(projectPopup);
+  };
+  const closeProjectFormBtn = createCloseFormBtn(projectPopup);
 
   projectForm.append(
     nameLabel,
     nameInput,
     descriptionLabel,
     descriptionInput,
-    submitBtn
+    submitProjectBtn,
+    closeProjectFormBtn
   );
   projectPopup.append(projectForm);
   body.append(projectPopup);
@@ -184,10 +209,7 @@ function loadTaskPopup(task) {
     dateInput.value = task.getDueDate();
   }
 
-  const submitTaskBtn = document.createElement('button');
-  submitTaskBtn.setAttribute('type', 'submit');
-  submitTaskBtn.setAttribute('value', 'Submit');
-  submitTaskBtn.textContent = 'Submit';
+  const submitTaskBtn = createSubmitBtn();
 
   taskForm.onsubmit = (event) => {
     event.preventDefault();
@@ -204,22 +226,16 @@ function loadTaskPopup(task) {
       currentProject.addToDoItem(newToDoItem);
     } else {
       // update the task in the current project
+      // OTHER TASK DATA TO ADD
       task.setTitle(nameInput.value);
       task.setDueDate(dateInput.value);
     }
     console.log(currentProject.getProjectTitle);
     loadMainContent(currentProject.getProjectTitle());
-    closeTaskPopup(taskPopup);
+    closePopup(taskPopup);
   };
 
-  const closeTaskFormBtn = document.createElement('button');
-  closeTaskFormBtn.setAttribute('type', 'button');
-  closeTaskFormBtn.setAttribute('value', 'X');
-  closeTaskFormBtn.textContent = 'X';
-  closeTaskFormBtn.classList.add('top-right');
-  closeTaskFormBtn.addEventListener('click', () => {
-    closeTaskPopup(taskPopup);
-  });
+  const closeTaskFormBtn = createCloseFormBtn(taskPopup);
 
   taskForm.append(
     nameLabel,
@@ -250,9 +266,36 @@ function createLabel(text, inputName) {
   return label;
 }
 
-function closeTaskPopup(popup) {
+function createSubmitBtn() {
+  const submitBtn = document.createElement('button');
+  submitBtn.setAttribute('type', 'submit');
+  submitBtn.setAttribute('value', 'Submit');
+  submitBtn.textContent = 'Submit';
+  return submitBtn;
+}
+
+function createCloseFormBtn(parentPopup) {
+  const closePopupBtn = document.createElement('button');
+  closePopupBtn.setAttribute('type', 'button');
+  closePopupBtn.setAttribute('value', 'X');
+  closePopupBtn.textContent = 'X';
+  closePopupBtn.classList.add('top-right');
+  closePopupBtn.addEventListener('click', () => {
+    closePopup(parentPopup);
+  });
+  return closePopupBtn;
+}
+
+function closePopup(popup, btn) {
   popup.remove();
-  newTaskBtn.disabled = false;
+  // btn.disabled = false;
+  enableAllButtons();
+}
+
+function enableAllButtons() {
+  document.querySelectorAll('button').forEach((button) => {
+    button.disabled = false;
+  });
 }
 
 function clearContent(div) {

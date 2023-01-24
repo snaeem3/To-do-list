@@ -57,7 +57,7 @@ input:checked ~ .task-description {
   text-decoration: line-through;
 }
 
-#task-form {
+form {
   position: absolute;
   top: 50%;
   left: 50%;
