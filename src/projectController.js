@@ -31,14 +31,18 @@ function projectIndex(projectName) {
   );
 }
 
-// function getToDoIndex(name) {
-//   for (let i = 0; i < projectArray.length; i += 1) {
-//     if (projectArray[i].getProjectTitle() === name) {
-//       return i;
-//     }
-//   }
-//   return -1;
-// }
+function getAllCompletedTasks() {
+  const completedTaskArray = [];
+  const projectIndex = [];
+  for (let i = 0; i < projectArray.length; i++) {
+    const completedTasks = projectArray[i].getCompletedTasks();
+    completedTaskArray.push(...completedTasks); // appends completedTasks to completedTaskArray
+    const indexTimesNumTasks = new Array(completedTasks.length).fill(i);
+    projectIndex.push(...indexTimesNumTasks); // appends indexTimesNumTasks to projectIndex
+  }
+
+  return { completedTaskArray, projectIndex };
+}
 
 export {
   projectArray,
@@ -48,4 +52,5 @@ export {
   addProject,
   deleteProject,
   projectIndex,
+  getAllCompletedTasks,
 };

@@ -32,7 +32,7 @@ const toDoItem3 = toDoItemModule.toDoItem(
   'bone',
   '2024-01-31',
   'high',
-  false
+  true
 );
 
 // To do item tests
@@ -78,10 +78,18 @@ const project2 = projectModule.project(
 );
 projectController.addProject(project1);
 projectController.addProject(project2);
-// console.log(projectController.getProjectArray()[0].getProjectTitle());
 // console.table(projectController.getProjectNames());
+const completedTasks =
+  projectController.getAllCompletedTasks().completedTaskArray;
+console.log(completedTasks);
+completedTasks.forEach((task) => {
+  console.log(task.getTitle());
+});
 
+projectController.addProject(
+  projectModule.project('General', 'Keep track of your general tasks here!', [])
+);
 displayController.loadSideBar();
-displayController.loadMainContent(project1.getProjectTitle());
+displayController.loadMainContentProjects('General');
 displayController.loadDefaultEventListeners();
 // displayController.loadTaskPopup();

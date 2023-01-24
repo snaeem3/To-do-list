@@ -29,6 +29,16 @@ export const project = (
 
   const numTasks = () => toDoArray.length;
 
+  function getCompletedTasks() {
+    const completedTasks = [];
+    for (let i = 0; i < numTasks(); i += 1) {
+      if (toDoArray[i].isComplete()) {
+        completedTasks.push(toDoArray[i]);
+      }
+    }
+    return completedTasks;
+  }
+
   return {
     getProjectTitle,
     getProjectDescription,
@@ -40,5 +50,6 @@ export const project = (
     removeToDoItem,
     getToDoIndex,
     numTasks,
+    getCompletedTasks,
   };
 };

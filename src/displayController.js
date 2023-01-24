@@ -7,10 +7,15 @@ const projectList = document.querySelector('#project-list');
 const contentHeader = document.querySelector('#content-header');
 const contentDescription = document.querySelector('#content-description');
 const contentBody = document.querySelector('#content-body');
+const generalBtn = document.querySelector('#generalBtn');
+const todayBtn = document.querySelector('#todayBtn');
+const upcomingBtn = document.querySelector('#upcomingBtn');
+const completedBtn = document.querySelector('#completedBtn');
 const newProjectBtn = document.querySelector('#newProjectBtn');
 const newTaskBtn = document.querySelector('#newTaskBtn');
 
 let currentProject = null;
+let lastLoadFunc = null;
 
 function setCurrentProject(projectName) {
   currentProject = projectController.getProject(projectName);
@@ -18,9 +23,9 @@ function setCurrentProject(projectName) {
 
 function loadSideBar() {
   clearContent(projectList);
-  loadProjects(projectController.getProjectNames());
+  loadSideBarProjects(projectController.getProjectNames());
 
-  function loadProjects(projectNames) {
+  function loadSideBarProjects(projectNames) {
     projectNames.forEach((projectName) => {
       const projectElement = document.createElement('li');
       projectElement.classList.add('project');
@@ -29,18 +34,23 @@ function loadSideBar() {
       projectBtn.textContent = projectName;
       projectBtn.addEventListener('click', () => {
         setCurrentProject(projectName);
-        loadMainContent(projectName);
+        loadMainContentProjects(projectName);
       });
 
       projectElement.appendChild(projectBtn);
-      projectList.appendChild(projectElement);
+
+      // Do not add General button to Projects list
+      if (projectName !== 'General') {
+        projectList.appendChild(projectElement);
+      }
     });
   }
 }
 
-function loadMainContent(projectName = 'General') {
+function loadMainContentProjects(projectName = 'General') {
   clearContent(contentBody);
   setCurrentProject(projectName);
+  // Populate header and description
   contentHeader.textContent = projectName;
   contentDescription.textContent = currentProject.getProjectDescription();
 
@@ -52,28 +62,19 @@ function loadMainContent(projectName = 'General') {
   function loadTasks(project, parentUl) {
     const toDoArray = project.getToDoItems();
     toDoArray.forEach((task) => {
-      const taskElement = document.createElement('li');
-      const checkBox = createCheckBox(project, task);
-      const taskName = document.createElement('h3');
-      taskName.textContent = task.getTitle();
-      taskName.classList.add('task-name');
-      const taskDescription = document.createElement('p');
-      taskDescription.classList.add('task-description');
-      taskDescription.textContent = task.getDescription();
-      const taskDueDate = document.createElement('p');
-      taskDueDate.textContent = task.getDueDate();
-      const editTaskBtn = document.createElement('button');
-      editTaskBtn.textContent = 'Edit';
-      const deleteTaskBtn = document.createElement('button');
-      deleteTaskBtn.textContent = 'Delete';
+      const {
+        taskElement,
+        checkBox,
+        taskName,
+        taskDescription,
+        taskDueDate,
+        editTaskBtn,
+        deleteTaskBtn,
+      } = createTaskElements(task, project);
 
-      checkBox.addEventListener('change', (event) => {
-        task.toggleComplete();
-      });
-
-      editTaskBtn.addEventListener('click', (event) => {
-        loadTaskPopup(task);
-      });
+      // editTaskBtn.addEventListener('click', (event) => {
+      //   loadTaskPopup(task);
+      // });
 
       deleteTaskBtn.addEventListener('click', (event) => {
         console.log(project.getProjectTitle());
@@ -81,11 +82,8 @@ function loadMainContent(projectName = 'General') {
         projectController.projectArray[
           projectController.projectIndex(project.getProjectTitle())
         ].removeToDoItem(task.getTitle());
-        // projectController
-        //   .getProject(project.getProjectTitle())
-        //   .removeToDoItem(task.getTitle());
 
-        loadMainContent(projectName);
+        loadMainContentProjects(projectName);
       });
 
       taskElement.append(
@@ -99,21 +97,102 @@ function loadMainContent(projectName = 'General') {
 
       parentUl.appendChild(taskElement);
     });
+  }
+}
 
-    function createCheckBox(inputProject, inputTask) {
-      const newCheckBox = document.createElement('input');
-      newCheckBox.setAttribute('type', 'checkbox');
-      newCheckBox.setAttribute(
-        'id',
-        `checkBox-${inputProject.getToDoIndex(inputTask.getTitle())}`
+function loadMainContentTasks(
+  headerText,
+  descriptionText,
+  tasks,
+  associatedProject // array of project indices associated with tasks
+) {
+  clearContent(contentBody);
+  // Populate header and description
+  contentHeader.textContent = headerText;
+  contentDescription.textContent = descriptionText;
+
+  const taskList = document.createElement('ul');
+  taskList.setAttribute('id', 'task-container');
+  loadTasksArray(tasks, taskList);
+  contentBody.append(taskList);
+
+  function loadTasksArray(taskArray, parentUl) {
+    for (let i = 0; i < taskArray.length; i++) {
+      const {
+        taskElement,
+        checkBox,
+        taskName,
+        taskDescription,
+        taskDueDate,
+        editTaskBtn,
+        deleteTaskBtn,
+      } = createTaskElements(
+        taskArray[i],
+        projectController.projectArray[associatedProject[i]]
       );
-      newCheckBox.setAttribute(
-        'name',
-        `checkBox-${inputProject.getToDoIndex(inputTask.getTitle())}`
+
+      taskElement.append(
+        checkBox,
+        taskName,
+        taskDescription,
+        taskDueDate,
+        editTaskBtn,
+        deleteTaskBtn
       );
-      newCheckBox.checked = inputTask.isComplete();
-      return newCheckBox;
+
+      parentUl.appendChild(taskElement);
     }
+  }
+}
+
+function createTaskElements(task, project) {
+  const taskElement = document.createElement('li');
+  const checkBox = createCheckBox(project, task);
+  const taskName = document.createElement('h3');
+  taskName.textContent = task.getTitle();
+  taskName.classList.add('task-name');
+  const taskDescription = document.createElement('p');
+  taskDescription.classList.add('task-description');
+  taskDescription.textContent = task.getDescription();
+  const taskDueDate = document.createElement('p');
+  taskDueDate.textContent = task.getDueDate();
+  const editTaskBtn = document.createElement('button');
+  editTaskBtn.textContent = 'Edit';
+  const deleteTaskBtn = document.createElement('button');
+  deleteTaskBtn.textContent = 'Delete';
+
+  // Event Listeners
+  checkBox.addEventListener('change', (event) => {
+    task.toggleComplete();
+  });
+
+  editTaskBtn.addEventListener('click', (event) => {
+    loadTaskPopup(task);
+  });
+
+  return {
+    taskElement,
+    checkBox,
+    taskName,
+    taskDescription,
+    taskDueDate,
+    editTaskBtn,
+    deleteTaskBtn,
+  };
+
+  function createCheckBox(inputProject, inputTask) {
+    const newCheckBox = document.createElement('input');
+    newCheckBox.setAttribute('type', 'checkbox');
+    // newCheckBox.setAttribute(
+    //   'id',
+    //   `checkBox-${inputProject.getToDoIndex(inputTask.getTitle())}`
+    // );
+    // newCheckBox.setAttribute(
+    //   'name',
+    //   `checkBox-${inputProject.getToDoIndex(inputTask.getTitle())}`
+    // );
+    newCheckBox.checked = inputTask.isComplete(); // checkbox will be set as checked if task is complete
+    return newCheckBox;
   }
 }
 
@@ -230,8 +309,8 @@ function loadTaskPopup(task) {
       task.setTitle(nameInput.value);
       task.setDueDate(dateInput.value);
     }
-    console.log(currentProject.getProjectTitle);
-    loadMainContent(currentProject.getProjectTitle());
+    reloadContentBody();
+    loadMainContentProjects(currentProject.getProjectTitle());
     closePopup(taskPopup);
   };
 
@@ -304,6 +383,10 @@ function clearContent(div) {
   }
 }
 
+function reloadContentBody() {
+  console.log(lastLoadFunc);
+}
+
 function loadDefaultEventListeners() {
   newTaskBtn.addEventListener('click', (event) => {
     loadTaskPopup();
@@ -312,6 +395,25 @@ function loadDefaultEventListeners() {
   newProjectBtn.addEventListener('click', (event) => {
     loadProjectPopup();
   });
+
+  generalBtn.addEventListener('click', (event) => {
+    loadMainContentProjects('General');
+  });
+
+  completedBtn.addEventListener('click', (event) => {
+    // load only completed tasks
+    const loadFunc = loadMainContentTasks(
+      'Completed Tasks',
+      "Take a look at all the tasks you've completed!",
+      projectController.getAllCompletedTasks().completedTaskArray,
+      projectController.getAllCompletedTasks().projectIndex
+    );
+    setLoadFunction(loadFunc);
+  });
 }
 
-export { loadSideBar, loadMainContent, loadDefaultEventListeners };
+function setLoadFunction(loadFunc) {
+  lastLoadFunc = loadFunc;
+}
+
+export { loadSideBar, loadMainContentProjects, loadDefaultEventListeners };
