@@ -1,16 +1,6 @@
-// const title = '';
-// const description = '';
-// const dueDate = '';
-// const priority = '';
+import { format, isWithinInterval } from 'date-fns';
 
-// function createToDoItem(title, description, dueDate, priority) {
-//   setTitle(title);
-//   setDescription(description);
-//   setDueDate(dueDate);
-//   setPriority(priority);
-// }
-
-// export { createToDoItem };
+const TODAY = new Date();
 
 export const toDoItem = (
   title,
@@ -24,10 +14,11 @@ export const toDoItem = (
   const getDueDate = () => dueDate;
   const getPriority = () => priority;
   const isComplete = () => complete;
+  const isHighPriority = () => priority === 'high';
 
   const setTitle = (value) => (title = value);
   const setDescription = (value) => (description = value);
-  const setDueDate = (value) => (dueDate = value);
+  const setDueDate = (value) => (dueDate = new Date(value));
   const setPriority = (value) => (priority = value);
   // const setComplete = (value) => (complete = value);
   const toggleComplete = () => (complete = !complete);
@@ -38,6 +29,7 @@ export const toDoItem = (
     getDueDate,
     getPriority,
     isComplete,
+    isHighPriority,
     setTitle,
     setDescription,
     setDueDate,

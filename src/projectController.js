@@ -21,6 +21,16 @@ function addProject(project) {
   projectArray.push(project);
 }
 
+function addGeneralProject() {
+  addProject(
+    projectModule.project(
+      'General',
+      'Keep track of your general tasks here!',
+      []
+    )
+  );
+}
+
 function deleteProject(projectName) {
   projectArray.splice(projectIndex(projectName), 1);
 }
@@ -44,13 +54,27 @@ function getAllCompletedTasks() {
   return { completedTaskArray, projectIndex };
 }
 
+function getAllHighPriorityTasks() {
+  const highPriorityTaskArray = [];
+  const projectIndex = [];
+  for (let i = 0; i < projectArray.length; i++) {
+    const highPriorityTasks = projectArray[i].getHighPriorityTasks();
+    highPriorityTaskArray.push(...highPriorityTasks); // appends highPriorityTasks to highPriority
+    const indexTimesNumTasks = new Array(highPriorityTasks.length).fill(i);
+    projectIndex.push(...indexTimesNumTasks); // appends indexTimesNumTasks to projectIndex
+  }
+  return { highPriorityTaskArray, projectIndex };
+}
+
 export {
   projectArray,
   getProjectArray,
   getProjectNames,
   getProject,
   addProject,
+  addGeneralProject,
   deleteProject,
   projectIndex,
   getAllCompletedTasks,
+  getAllHighPriorityTasks,
 };

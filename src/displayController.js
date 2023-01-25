@@ -1,11 +1,15 @@
+import { format, isWithinInterval, addDays } from 'date-fns';
 import * as projectController from './projectController.js';
 import * as toDoItemModule from './todoListItem.js';
 import * as projectModule from './project.js';
 
 const body = document.querySelector('body');
 const projectList = document.querySelector('#project-list');
+const projectInfo = document.querySelector('#project-info');
 const contentHeader = document.querySelector('#content-header');
 const contentDescription = document.querySelector('#content-description');
+const editProjectBtn = document.querySelector('#edit-project-btn');
+const deleteProjectBtn = document.querySelector('#delete-project-btn');
 const contentBody = document.querySelector('#content-body');
 const generalBtn = document.querySelector('#generalBtn');
 const highPriorityBtn = document.querySelector('#highPriorityBtn');
@@ -16,10 +20,13 @@ const newProjectBtn = document.querySelector('#newProjectBtn');
 const newTaskBtn = document.querySelector('#newTaskBtn');
 
 let currentProject = null;
-let lastLoadFunc = null;
+// Parameters for remembering recent main content load when editing task
+let recentTaskParams = null;
+let recentType = 'project';
 
 function setCurrentProject(projectName) {
   currentProject = projectController.getProject(projectName);
+  // currentProject = projectName;
 }
 
 function loadSideBar() {
@@ -36,6 +43,7 @@ function loadSideBar() {
       projectBtn.addEventListener('click', () => {
         setCurrentProject(projectName);
         loadMainContentProjects(projectName);
+        setReloadContentBody('project');
       });
 
       projectElement.appendChild(projectBtn);
@@ -51,7 +59,16 @@ function loadSideBar() {
 function loadMainContentProjects(projectName = 'General') {
   clearContent(contentBody);
   newTaskBtn.style.display = 'block';
+  editProjectBtn.style.display = 'block';
+  deleteProjectBtn.style.display = 'block';
   setCurrentProject(projectName);
+
+  // Hide edit and delete project buttons if 'General'
+  if (projectName === 'General') {
+    deleteProjectBtn.style.display = 'none';
+    editProjectBtn.style.display = 'none';
+  }
+
   // Populate header and description
   contentHeader.textContent = projectName;
   contentDescription.textContent = currentProject.getProjectDescription();
@@ -112,6 +129,8 @@ function loadMainContentTasks(
 ) {
   clearContent(contentBody);
   newTaskBtn.style.display = 'none';
+  editProjectBtn.style.display = 'none';
+  deleteProjectBtn.style.display = 'none';
   // Populate header and description
   contentHeader.textContent = headerText;
   contentDescription.textContent = descriptionText;
@@ -145,6 +164,7 @@ function loadMainContentTasks(
         loadMainContentProjects(
           projectController.projectArray[associatedProject[i]].getProjectTitle()
         );
+        setReloadContentBody('project');
       });
 
       taskElement.append(
@@ -173,12 +193,13 @@ function createTaskElements(task, project) {
   taskDescription.classList.add('task-description');
   taskDescription.textContent = task.getDescription();
   const taskDueDate = document.createElement('p');
-  taskDueDate.textContent = task.getDueDate();
+  taskDueDate.textContent = format(task.getDueDate(), 'PPP');
   const taskPriority = document.createElement('p');
   taskPriority.textContent = task.getPriority();
   const editTaskBtn = document.createElement('button');
   editTaskBtn.textContent = 'Edit';
   const deleteTaskBtn = document.createElement('button');
+  deleteTaskBtn.classList.add('delete');
   deleteTaskBtn.textContent = 'Delete';
 
   // Event Listeners
@@ -249,24 +270,45 @@ function loadProjectPopup(project) {
 
   const submitProjectBtn = createSubmitBtn();
 
+  if (project !== undefined) {
+    nameInput.value = project.getProjectTitle();
+    descriptionInput.value = project.getProjectDescription();
+  }
+
+  // Submit project data
   projectForm.onsubmit = (event) => {
-    console.log(`Form submitted`);
     event.preventDefault();
     const newProject = projectModule.project(
       nameInput.value,
       descriptionInput.value
     );
 
+    // if (project === undefined) {
+    //   console.warn('No project given');
+    //   projectController.addProject(newProject);
+    // } else {
+    //   projectController.projectArray[
+    //     projectController.projectIndex(currentProject)
+    //   ] = newProject;
+    // }
     if (project === undefined) {
-      console.warn('No project given');
+      // New Project
       projectController.addProject(newProject);
     } else {
+      // Edit current project
+      // 1) set project name
       projectController.projectArray[
-        projectController.projectIndex(currentProject)
-      ] = newProject;
+        projectController.projectIndex(project.getProjectTitle())
+      ].setProjectTitle(nameInput.value);
+      // 2) set project description
+      projectController.projectArray[
+        projectController.projectIndex(project.getProjectTitle())
+      ].setProjectDescription(descriptionInput.value);
     }
 
     loadSideBar();
+    reloadContentBody();
+    // loadMainContentProjects(newProject.getProjectTitle());
     closePopup(projectPopup);
   };
   const closeProjectFormBtn = createCloseFormBtn(projectPopup);
@@ -296,7 +338,7 @@ function loadTaskPopup(task) {
   setInputValues(nameInput, 'text', 'task', 'task-name', 'Task Name', true);
   const nameLabel = createLabel('Task Name', nameInput);
 
-  // Task description input - TO ADD
+  // Task description input
   const descriptionInput = document.createElement('textarea');
   setInputValues(
     descriptionInput,
@@ -315,6 +357,7 @@ function loadTaskPopup(task) {
 
   // Priority Input
   const priorityInput = document.createElement('div');
+  const priorityLabel = createLabel('Priority', 'priority');
   priorityInput.classList.add('radio-toolbar');
   const lowPriorityInput = document.createElement('input');
   setInputValues(lowPriorityInput, 'radio', 'priority', 'low');
@@ -338,11 +381,12 @@ function loadTaskPopup(task) {
     highPriorityLabel
   );
 
-  // if an input task was given (edit button clicked)
+  // if an input task was given (edit button clicked) fill in previous data
   if (task !== undefined) {
     nameInput.value = task.getTitle();
     descriptionInput.value = task.getDescription();
-    dateInput.value = task.getDueDate();
+    dateInput.value = format(task.getDueDate(), 'yyyy-MM-dd');
+    // dateInput.value = format(task.getDueDate(), 'yyyy-MM-dd');
 
     if (task.getPriority() === 'low') {
       lowPriorityInput.checked = true;
@@ -364,7 +408,7 @@ function loadTaskPopup(task) {
     const newToDoItem = toDoItemModule.toDoItem(
       nameInput.value,
       descriptionInput.value,
-      dateInput.value,
+      new Date(dateInput.value),
       checkedID,
       false
     );
@@ -373,14 +417,13 @@ function loadTaskPopup(task) {
       currentProject.addToDoItem(newToDoItem);
     } else {
       // update the task in the current project
-      // OTHER TASK DATA TO ADD
       task.setTitle(nameInput.value);
       task.setDescription(descriptionInput.value);
-      task.setDueDate(dateInput.value);
+      task.setDueDate(new Date(dateInput.value));
       task.setPriority(checkedID);
     }
     reloadContentBody();
-    loadMainContentProjects(currentProject.getProjectTitle());
+    // loadMainContentProjects(currentProject.getProjectTitle());
     closePopup(taskPopup);
   };
 
@@ -393,6 +436,7 @@ function loadTaskPopup(task) {
     descriptionInput,
     dateLabel,
     dateInput,
+    priorityLabel,
     priorityInput,
     submitTaskBtn,
     closeTaskFormBtn
@@ -462,8 +506,22 @@ function clearContent(div) {
   }
 }
 
+function setReloadContentBody(type, taskParams) {
+  recentTaskParams = taskParams;
+  recentType = type;
+}
+
 function reloadContentBody() {
-  console.log(lastLoadFunc);
+  if (recentType === 'project') {
+    loadMainContentProjects(currentProject.getProjectTitle());
+  } else {
+    loadMainContentTasks(
+      recentTaskParams[0],
+      recentTaskParams[1],
+      recentTaskParams[2],
+      recentTaskParams[3]
+    );
+  }
 }
 
 function loadDefaultEventListeners() {
@@ -475,24 +533,49 @@ function loadDefaultEventListeners() {
     loadProjectPopup();
   });
 
+  editProjectBtn.addEventListener('click', (event) => {
+    loadProjectPopup(currentProject);
+  });
+
+  deleteProjectBtn.addEventListener('click', (event) => {
+    // delete the current project
+    projectController.deleteProject(currentProject.getProjectTitle());
+    loadMainContentProjects('General');
+    loadSideBar();
+  });
+
+  highPriorityBtn.addEventListener('click', (event) => {
+    // load only high-priority tasks
+    const taskParams = [
+      'High Priority Tasks',
+      '',
+      projectController.getAllHighPriorityTasks().highPriorityTaskArray,
+      projectController.getAllHighPriorityTasks().projectIndex,
+    ];
+    loadMainContentTasks(
+      taskParams[0],
+      taskParams[1],
+      taskParams[2],
+      taskParams[3]
+    );
+
+    setReloadContentBody('highPriority', taskParams);
+  });
+
   generalBtn.addEventListener('click', (event) => {
     loadMainContentProjects('General');
+    // setReloadContentBody('project');
   });
 
   completedBtn.addEventListener('click', (event) => {
     // load only completed tasks
-    const loadFunc = loadMainContentTasks(
+    loadMainContentTasks(
       'Completed Tasks',
       "Take a look at all the tasks you've completed!",
       projectController.getAllCompletedTasks().completedTaskArray,
       projectController.getAllCompletedTasks().projectIndex
     );
-    setLoadFunction(loadFunc);
   });
-}
-
-function setLoadFunction(loadFunc) {
-  lastLoadFunc = loadFunc;
 }
 
 export { loadSideBar, loadMainContentProjects, loadDefaultEventListeners };

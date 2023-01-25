@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/snaeem3/To-do-list#readme",
   "dependencies": {
+    "date-fns": "^2.29.3",
     "eslint-config-wesbos": "^3.2.3"
   },
   "devDependencies": {

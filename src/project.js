@@ -39,6 +39,16 @@ export const project = (
     return completedTasks;
   }
 
+  function getHighPriorityTasks() {
+    const highPriorityTasks = [];
+    for (let i = 0; i < numTasks(); i += 1) {
+      if (toDoArray[i].isHighPriority()) {
+        highPriorityTasks.push(toDoArray[i]);
+      }
+    }
+    return highPriorityTasks;
+  }
+
   return {
     getProjectTitle,
     getProjectDescription,
@@ -51,5 +61,6 @@ export const project = (
     getToDoIndex,
     numTasks,
     getCompletedTasks,
+    getHighPriorityTasks,
   };
 };

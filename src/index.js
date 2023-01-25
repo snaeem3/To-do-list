@@ -1,4 +1,5 @@
 import './styles.css';
+import { format, isWithinInterval, addDays } from 'date-fns';
 import * as toDoItemModule from './todoListItem.js';
 import * as projectModule from './project.js';
 import * as projectController from './projectController.js';
@@ -14,7 +15,7 @@ import * as displayController from './displayController';
 const toDoItem1 = toDoItemModule.toDoItem(
   'buy groceries',
   'eggs and milk',
-  '2023-01-31',
+  new Date('2023-01-31'),
   'low',
   true
 );
@@ -22,7 +23,7 @@ const toDoItem1 = toDoItemModule.toDoItem(
 const toDoItem2 = toDoItemModule.toDoItem(
   'clean kitchen',
   'microwave and oven',
-  '2023-01-31',
+  new Date('2023-01-31'),
   'medium',
   false
 );
@@ -30,7 +31,7 @@ const toDoItem2 = toDoItemModule.toDoItem(
 const toDoItem3 = toDoItemModule.toDoItem(
   'feed dog',
   'bone',
-  '2024-01-31',
+  new Date('2024-01-31'),
   'high',
   true
 );
@@ -86,9 +87,12 @@ completedTasks.forEach((task) => {
   console.log(task.getTitle());
 });
 
-projectController.addProject(
-  projectModule.project('General', 'Keep track of your general tasks here!', [])
-);
+const TODAY = new Date();
+const ONE_WEEK_FROM_TODAY = addDays(TODAY, 7);
+console.log(format(ONE_WEEK_FROM_TODAY, 'yyyy-MM-dd'));
+console.log(typeof TODAY);
+
+projectController.addGeneralProject();
 displayController.loadSideBar();
 displayController.loadMainContentProjects('General');
 displayController.loadDefaultEventListeners();
