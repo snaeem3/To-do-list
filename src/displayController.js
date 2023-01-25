@@ -49,6 +49,7 @@ function loadSideBar() {
 
 function loadMainContentProjects(projectName = 'General') {
   clearContent(contentBody);
+  newTaskBtn.style.display = 'block';
   setCurrentProject(projectName);
   // Populate header and description
   contentHeader.textContent = projectName;
@@ -107,6 +108,7 @@ function loadMainContentTasks(
   associatedProject // array of project indices associated with tasks
 ) {
   clearContent(contentBody);
+  newTaskBtn.style.display = 'none';
   // Populate header and description
   contentHeader.textContent = headerText;
   contentDescription.textContent = descriptionText;
@@ -131,11 +133,22 @@ function loadMainContentTasks(
         projectController.projectArray[associatedProject[i]]
       );
 
+      // Create project button
+      const projectBtn = document.createElement('button');
+      projectBtn.textContent =
+        projectController.projectArray[associatedProject[i]].getProjectTitle();
+      projectBtn.addEventListener('click', () => {
+        loadMainContentProjects(
+          projectController.projectArray[associatedProject[i]].getProjectTitle()
+        );
+      });
+
       taskElement.append(
         checkBox,
         taskName,
         taskDescription,
         taskDueDate,
+        projectBtn,
         editTaskBtn,
         deleteTaskBtn
       );
@@ -198,6 +211,7 @@ function createTaskElements(task, project) {
 
 function loadProjectPopup(project) {
   newProjectBtn.setAttribute('disabled', true);
+  disableAllButtons();
 
   const projectPopup = document.createElement('div');
   const projectForm = document.createElement('form');
@@ -263,6 +277,7 @@ function loadProjectPopup(project) {
 
 function loadTaskPopup(task) {
   newTaskBtn.setAttribute('disabled', true);
+  disableAllButtons();
 
   const taskPopup = document.createElement('div');
   const taskForm = document.createElement('form');
@@ -274,6 +289,16 @@ function loadTaskPopup(task) {
   const nameLabel = createLabel('Task Name', nameInput);
 
   // Task description input - TO ADD
+  const descriptionInput = document.createElement('textarea');
+  setInputValues(
+    descriptionInput,
+    'text',
+    'descriptionInput',
+    'descriptionInput',
+    'Task Description',
+    false
+  );
+  const descriptionLabel = createLabel('Task Description', descriptionInput);
 
   // Date Input
   const dateInput = document.createElement('input');
@@ -295,7 +320,7 @@ function loadTaskPopup(task) {
     // create to-do item
     const newToDoItem = toDoItemModule.toDoItem(
       nameInput.value,
-      'placeholder description',
+      descriptionInput.value,
       dateInput.value,
       'placeholder priority',
       false
@@ -319,6 +344,8 @@ function loadTaskPopup(task) {
   taskForm.append(
     nameLabel,
     nameInput,
+    descriptionLabel,
+    descriptionInput,
     dateLabel,
     dateInput,
     submitTaskBtn,
@@ -374,6 +401,12 @@ function closePopup(popup, btn) {
 function enableAllButtons() {
   document.querySelectorAll('button').forEach((button) => {
     button.disabled = false;
+  });
+}
+
+function disableAllButtons() {
+  document.querySelectorAll('button').forEach((button) => {
+    button.disabled = true;
   });
 }
 
