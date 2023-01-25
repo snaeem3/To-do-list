@@ -15,7 +15,7 @@ const toDoItem1 = toDoItemModule.toDoItem(
   'buy groceries',
   'eggs and milk',
   '2023-01-31',
-  'high',
+  'low',
   true
 );
 
@@ -23,7 +23,7 @@ const toDoItem2 = toDoItemModule.toDoItem(
   'clean kitchen',
   'microwave and oven',
   '2023-01-31',
-  'normal',
+  'medium',
   false
 );
 

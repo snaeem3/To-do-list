@@ -8,6 +8,7 @@ const contentHeader = document.querySelector('#content-header');
 const contentDescription = document.querySelector('#content-description');
 const contentBody = document.querySelector('#content-body');
 const generalBtn = document.querySelector('#generalBtn');
+const highPriorityBtn = document.querySelector('#highPriorityBtn');
 const todayBtn = document.querySelector('#todayBtn');
 const upcomingBtn = document.querySelector('#upcomingBtn');
 const completedBtn = document.querySelector('#completedBtn');
@@ -69,6 +70,7 @@ function loadMainContentProjects(projectName = 'General') {
         taskName,
         taskDescription,
         taskDueDate,
+        taskPriority,
         editTaskBtn,
         deleteTaskBtn,
       } = createTaskElements(task, project);
@@ -92,6 +94,7 @@ function loadMainContentProjects(projectName = 'General') {
         taskName,
         taskDescription,
         taskDueDate,
+        taskPriority,
         editTaskBtn,
         deleteTaskBtn
       );
@@ -126,6 +129,7 @@ function loadMainContentTasks(
         taskName,
         taskDescription,
         taskDueDate,
+        taskPriority,
         editTaskBtn,
         deleteTaskBtn,
       } = createTaskElements(
@@ -148,6 +152,7 @@ function loadMainContentTasks(
         taskName,
         taskDescription,
         taskDueDate,
+        taskPriority,
         projectBtn,
         editTaskBtn,
         deleteTaskBtn
@@ -169,6 +174,8 @@ function createTaskElements(task, project) {
   taskDescription.textContent = task.getDescription();
   const taskDueDate = document.createElement('p');
   taskDueDate.textContent = task.getDueDate();
+  const taskPriority = document.createElement('p');
+  taskPriority.textContent = task.getPriority();
   const editTaskBtn = document.createElement('button');
   editTaskBtn.textContent = 'Edit';
   const deleteTaskBtn = document.createElement('button');
@@ -189,6 +196,7 @@ function createTaskElements(task, project) {
     taskName,
     taskDescription,
     taskDueDate,
+    taskPriority,
     editTaskBtn,
     deleteTaskBtn,
   };
@@ -305,12 +313,44 @@ function loadTaskPopup(task) {
   setInputValues(dateInput, 'date', 'due-date', 'due-date');
   const dateLabel = createLabel('Due Date', 'due-date');
 
-  // Priority Input - TO ADD
+  // Priority Input
+  const priorityInput = document.createElement('div');
+  priorityInput.classList.add('radio-toolbar');
+  const lowPriorityInput = document.createElement('input');
+  setInputValues(lowPriorityInput, 'radio', 'priority', 'low');
+  const lowPriorityLabel = createLabel('Low', 'low');
+  const mediumPriorityInput = document.createElement('input');
+  setInputValues(mediumPriorityInput, 'radio', 'priority', 'medium');
+  const mediumPriorityLabel = createLabel('Medium', 'medium');
+  const highPriorityInput = document.createElement('input');
+  setInputValues(highPriorityInput, 'radio', 'priority', 'high');
+  const highPriorityLabel = createLabel('High', 'high');
+
+  // Default checked value
+  mediumPriorityInput.checked = true;
+
+  priorityInput.append(
+    lowPriorityInput,
+    lowPriorityLabel,
+    mediumPriorityInput,
+    mediumPriorityLabel,
+    highPriorityInput,
+    highPriorityLabel
+  );
 
   // if an input task was given (edit button clicked)
   if (task !== undefined) {
     nameInput.value = task.getTitle();
+    descriptionInput.value = task.getDescription();
     dateInput.value = task.getDueDate();
+
+    if (task.getPriority() === 'low') {
+      lowPriorityInput.checked = true;
+    } else if (task.getPriority() === 'medium') {
+      mediumPriorityInput.checked = true;
+    } else {
+      highPriorityInput.checked = true;
+    }
   }
 
   const submitTaskBtn = createSubmitBtn();
@@ -318,11 +358,14 @@ function loadTaskPopup(task) {
   taskForm.onsubmit = (event) => {
     event.preventDefault();
     // create to-do item
+    const checkedID = document.querySelector(
+      'input[name="priority"]:checked'
+    ).id;
     const newToDoItem = toDoItemModule.toDoItem(
       nameInput.value,
       descriptionInput.value,
       dateInput.value,
-      'placeholder priority',
+      checkedID,
       false
     );
     if (task === undefined) {
@@ -332,7 +375,9 @@ function loadTaskPopup(task) {
       // update the task in the current project
       // OTHER TASK DATA TO ADD
       task.setTitle(nameInput.value);
+      task.setDescription(descriptionInput.value);
       task.setDueDate(dateInput.value);
+      task.setPriority(checkedID);
     }
     reloadContentBody();
     loadMainContentProjects(currentProject.getProjectTitle());
@@ -348,6 +393,7 @@ function loadTaskPopup(task) {
     descriptionInput,
     dateLabel,
     dateInput,
+    priorityInput,
     submitTaskBtn,
     closeTaskFormBtn
   );
