@@ -39,6 +39,16 @@ export const project = (
     return completedTasks;
   }
 
+  function getIncompletedTasks() {
+    const incompleteTasks = [];
+    for (let i = 0; i < numTasks(); i += 1) {
+      if (!toDoArray[i].isComplete()) {
+        incompleteTasks.push(toDoArray[i]);
+      }
+    }
+    return incompleteTasks;
+  }
+
   function getHighPriorityTasks() {
     const highPriorityTasks = [];
     for (let i = 0; i < numTasks(); i += 1) {
@@ -47,6 +57,16 @@ export const project = (
       }
     }
     return highPriorityTasks;
+  }
+
+  function getTodayTasks() {
+    const todayTasks = [];
+    for (let i = 0; i < numTasks(); i += 1) {
+      if (toDoArray[i].isToday()) {
+        todayTasks.push(toDoArray[i]);
+      }
+    }
+    return todayTasks;
   }
 
   return {
@@ -61,6 +81,8 @@ export const project = (
     getToDoIndex,
     numTasks,
     getCompletedTasks,
+    getIncompletedTasks,
     getHighPriorityTasks,
+    getTodayTasks,
   };
 };

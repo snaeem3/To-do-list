@@ -1,4 +1,4 @@
-import { format, isWithinInterval } from 'date-fns';
+import { format, isWithinInterval, isSameDay } from 'date-fns';
 
 const TODAY = new Date();
 
@@ -15,10 +15,14 @@ export const toDoItem = (
   const getPriority = () => priority;
   const isComplete = () => complete;
   const isHighPriority = () => priority === 'high';
+  const isToday = () => isSameDay(TODAY, dueDate);
 
   const setTitle = (value) => (title = value);
   const setDescription = (value) => (description = value);
-  const setDueDate = (value) => (dueDate = new Date(value));
+  const setDueDate = (value) => {
+    const date = new Date(value);
+    dueDate = new Date(date.valueOf() + date.getTimezoneOffset() * 60000);
+  };
   const setPriority = (value) => (priority = value);
   // const setComplete = (value) => (complete = value);
   const toggleComplete = () => (complete = !complete);
@@ -30,6 +34,7 @@ export const toDoItem = (
     getPriority,
     isComplete,
     isHighPriority,
+    isToday,
     setTitle,
     setDescription,
     setDueDate,

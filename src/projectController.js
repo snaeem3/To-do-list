@@ -66,6 +66,18 @@ function getAllHighPriorityTasks() {
   return { highPriorityTaskArray, projectIndex };
 }
 
+function getAllTodayTasks() {
+  const todayTaskArray = [];
+  const projectIndex = [];
+  for (let i = 0; i < projectArray.length; i++) {
+    const todayTasks = projectArray[i].getTodayTasks();
+    todayTaskArray.push(...todayTasks); // appends todayTasks to todayTaskArray
+    const indexTimesNumTasks = new Array(todayTasks.length).fill(i);
+    projectIndex.push(...indexTimesNumTasks); // appends indexTimesNumTasks to projectIndex
+  }
+  return { todayTaskArray, projectIndex };
+}
+
 export {
   projectArray,
   getProjectArray,
@@ -77,4 +89,5 @@ export {
   projectIndex,
   getAllCompletedTasks,
   getAllHighPriorityTasks,
+  getAllTodayTasks,
 };

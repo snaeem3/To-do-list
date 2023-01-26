@@ -1,4 +1,4 @@
-import { format, isWithinInterval, addDays } from 'date-fns';
+import { format, isWithinInterval, addDays, isValid } from 'date-fns';
 import * as projectController from './projectController.js';
 import * as toDoItemModule from './todoListItem.js';
 import * as projectModule from './project.js';
@@ -10,6 +10,7 @@ const contentHeader = document.querySelector('#content-header');
 const contentDescription = document.querySelector('#content-description');
 const editProjectBtn = document.querySelector('#edit-project-btn');
 const deleteProjectBtn = document.querySelector('#delete-project-btn');
+const hideCompletedInput = document.querySelector('#hide-completed');
 const contentBody = document.querySelector('#content-body');
 const generalBtn = document.querySelector('#generalBtn');
 const highPriorityBtn = document.querySelector('#highPriorityBtn');
@@ -56,7 +57,10 @@ function loadSideBar() {
   }
 }
 
-function loadMainContentProjects(projectName = 'General') {
+function loadMainContentProjects(
+  projectName = 'General',
+  hideCompleted = false
+) {
   clearContent(contentBody);
   newTaskBtn.style.display = 'block';
   editProjectBtn.style.display = 'block';
@@ -79,7 +83,9 @@ function loadMainContentProjects(projectName = 'General') {
   contentBody.append(taskList);
 
   function loadTasks(project, parentUl) {
-    const toDoArray = project.getToDoItems();
+    const toDoArray = hideCompleted
+      ? project.getIncompletedTasks()
+      : project.getToDoItems();
     toDoArray.forEach((task) => {
       const {
         taskElement,
@@ -193,7 +199,11 @@ function createTaskElements(task, project) {
   taskDescription.classList.add('task-description');
   taskDescription.textContent = task.getDescription();
   const taskDueDate = document.createElement('p');
-  taskDueDate.textContent = format(task.getDueDate(), 'PPP');
+  if (isValid(task.getDueDate())) {
+    taskDueDate.textContent = format(task.getDueDate(), 'PPP');
+  } else {
+    taskDueDate.textContent = '';
+  }
   const taskPriority = document.createElement('p');
   taskPriority.textContent = task.getPriority();
   const editTaskBtn = document.createElement('button');
@@ -225,14 +235,6 @@ function createTaskElements(task, project) {
   function createCheckBox(inputProject, inputTask) {
     const newCheckBox = document.createElement('input');
     newCheckBox.setAttribute('type', 'checkbox');
-    // newCheckBox.setAttribute(
-    //   'id',
-    //   `checkBox-${inputProject.getToDoIndex(inputTask.getTitle())}`
-    // );
-    // newCheckBox.setAttribute(
-    //   'name',
-    //   `checkBox-${inputProject.getToDoIndex(inputTask.getTitle())}`
-    // );
     newCheckBox.checked = inputTask.isComplete(); // checkbox will be set as checked if task is complete
     return newCheckBox;
   }
@@ -352,7 +354,7 @@ function loadTaskPopup(task) {
 
   // Date Input
   const dateInput = document.createElement('input');
-  setInputValues(dateInput, 'date', 'due-date', 'due-date');
+  setInputValues(dateInput, 'date', 'due-date', 'due-date', '', false);
   const dateLabel = createLabel('Due Date', 'due-date');
 
   // Priority Input
@@ -385,8 +387,9 @@ function loadTaskPopup(task) {
   if (task !== undefined) {
     nameInput.value = task.getTitle();
     descriptionInput.value = task.getDescription();
-    dateInput.value = format(task.getDueDate(), 'yyyy-MM-dd');
-    // dateInput.value = format(task.getDueDate(), 'yyyy-MM-dd');
+    if (isValid(task.getDueDate())) {
+      dateInput.value = format(task.getDueDate(), 'yyyy-MM-dd');
+    }
 
     if (task.getPriority() === 'low') {
       lowPriorityInput.checked = true;
@@ -511,9 +514,9 @@ function setReloadContentBody(type, taskParams) {
   recentType = type;
 }
 
-function reloadContentBody() {
+function reloadContentBody(hideCompleted = false) {
   if (recentType === 'project') {
-    loadMainContentProjects(currentProject.getProjectTitle());
+    loadMainContentProjects(currentProject.getProjectTitle(), hideCompleted);
   } else {
     loadMainContentTasks(
       recentTaskParams[0],
@@ -544,6 +547,15 @@ function loadDefaultEventListeners() {
     loadSideBar();
   });
 
+  hideCompletedInput.addEventListener('change', (event) => {
+    if (hideCompletedInput.checked) {
+      // Hide completed tasks
+      reloadContentBody(true);
+    } else {
+      reloadContentBody(false);
+    }
+  });
+
   highPriorityBtn.addEventListener('click', (event) => {
     // load only high-priority tasks
     const taskParams = [
@@ -562,9 +574,24 @@ function loadDefaultEventListeners() {
     setReloadContentBody('highPriority', taskParams);
   });
 
+  todayBtn.addEventListener('click', (event) => {
+    const taskParams = [
+      'Tasks due Today',
+      '',
+      projectController.getAllTodayTasks().todayTaskArray,
+      projectController.getAllTodayTasks().projectIndex,
+    ];
+    loadMainContentTasks(
+      [taskParams[0]],
+      taskParams[1],
+      taskParams[2],
+      taskParams[3]
+    );
+  });
+
   generalBtn.addEventListener('click', (event) => {
     loadMainContentProjects('General');
-    // setReloadContentBody('project');
+    setReloadContentBody('project');
   });
 
   completedBtn.addEventListener('click', (event) => {
