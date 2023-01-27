@@ -285,14 +285,6 @@ function loadProjectPopup(project) {
       descriptionInput.value
     );
 
-    // if (project === undefined) {
-    //   console.warn('No project given');
-    //   projectController.addProject(newProject);
-    // } else {
-    //   projectController.projectArray[
-    //     projectController.projectIndex(currentProject)
-    //   ] = newProject;
-    // }
     if (project === undefined) {
       // New Project
       projectController.addProject(newProject);
@@ -582,11 +574,12 @@ function loadDefaultEventListeners() {
       projectController.getAllTodayTasks().projectIndex,
     ];
     loadMainContentTasks(
-      [taskParams[0]],
+      taskParams[0],
       taskParams[1],
       taskParams[2],
       taskParams[3]
     );
+    setReloadContentBody('today', taskParams);
   });
 
   generalBtn.addEventListener('click', (event) => {
@@ -596,12 +589,26 @@ function loadDefaultEventListeners() {
 
   completedBtn.addEventListener('click', (event) => {
     // load only completed tasks
-    loadMainContentTasks(
+    // loadMainContentTasks(
+    //   'Completed Tasks',
+    //   "Take a look at all the tasks you've completed!",
+    //   projectController.getAllCompletedTasks().completedTaskArray,
+    //   projectController.getAllCompletedTasks().projectIndex
+    // );
+    const taskParams = [
       'Completed Tasks',
       "Take a look at all the tasks you've completed!",
       projectController.getAllCompletedTasks().completedTaskArray,
-      projectController.getAllCompletedTasks().projectIndex
+      projectController.getAllCompletedTasks().projectIndex,
+    ];
+
+    loadMainContentTasks(
+      taskParams[0],
+      taskParams[1],
+      taskParams[2],
+      taskParams[3]
     );
+    setReloadContentBody('completed', taskParams);
   });
 }
 
