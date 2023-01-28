@@ -1,13 +1,16 @@
 @import url("https://fonts.googleapis.com/css2?family=Raleway&display=swap");
 
 :root {
-  --color-shadow: grey;
   --section-padding: 8px;
   --section-margin: 8px;
   --border-radius-default: 0.75rem;
   --primary-color: #00ffff;
   --primary-color-dark: #008181;
   --shade-color: #494949da;
+  --color-shadow: grey;
+  --high-priority-color: red;
+  --medium-priority-color: yellow;
+  --low-priority-color: rgb(29, 199, 255);
 }
 
 *,
@@ -43,6 +46,14 @@ button:hover {
   background-color: var(--primary-color-dark);
 }
 
+ul {
+  list-style-type: none;
+}
+
+.delete {
+  background: rgb(187, 0, 0);
+}
+
 main {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -52,16 +63,91 @@ main {
   grid-column: 2 / 4;
 }
 
-input:checked ~ .task-name,
-input:checked ~ .task-description {
+#task-container li {
+  display: grid;
+  /* grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); */
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-rows: 1fr;
+  align-items: baseline;
+  padding: var(--section-padding);
+  margin: 8px 0;
+  background: #fff7d2;
+  /* border-radius: var(--border-radius-default); */
+}
+
+li.low {
+  border-left: solid 8px var(--low-priority-color);
+}
+
+li.high {
+  border-left: solid 8px var(--high-priority-color);
+}
+
+.task-name {
+  margin-left: -50px;
+}
+
+/* Task complete styling */
+.task-complete-checkbox:checked ~ .description-checkbox-label,
+.task-complete-checkbox:checked ~ .task-description {
   text-decoration: line-through;
 }
+
+.task-description {
+  display: none;
+  grid-row: 2 / 3;
+  grid-column: 2 / span 5;
+}
+
+.description-checkbox {
+  display: none;
+}
+
+.description-checkbox-label {
+  display: block;
+  position: relative;
+  cursor: pointer;
+}
+
+.description-checkbox-label::before {
+  content: "";
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border-bottom: solid 2px black;
+  border-right: solid 2px black;
+  margin-right: 1rem;
+  /* position: absolute; */
+  left: 0;
+  /* top: -10px; */
+  transform: rotate(-45deg);
+  /* background: gray; */
+  transition: all 0.2s;
+}
+
+.description-checkbox:checked + label::before {
+  transform: rotate(45deg);
+}
+
+.description-checkbox:checked ~ .task-description {
+  display: block;
+}
+
+.edit-task-btn {
+  grid-column: -2;
+}
+
+.delete-task-btn {
+  grid-column: -1;
+}
+
+/* FORM STYLING */
 
 form {
   position: absolute;
   top: 50%;
   left: 50%;
-  padding: var(--section-padding);
+  padding: 2rem 1rem;
   transform: translate(-50%, -50%);
   width: 50%;
   background: lightcyan;

@@ -66,6 +66,7 @@ function loadMainContentProjects(
   editProjectBtn.style.display = 'block';
   deleteProjectBtn.style.display = 'block';
   setCurrentProject(projectName);
+  hideCompleted = hideCompletedInput.checked;
 
   // Hide edit and delete project buttons if 'General'
   if (projectName === 'General') {
@@ -86,43 +87,38 @@ function loadMainContentProjects(
     const toDoArray = hideCompleted
       ? project.getIncompletedTasks()
       : project.getToDoItems();
+    let taskIndex = 0;
     toDoArray.forEach((task) => {
       const {
         taskElement,
-        checkBox,
+        taskCheckBox,
+        descriptionCheckBox,
+        descriptionCheckBoxLabel,
         taskName,
         taskDescription,
         taskDueDate,
         taskPriority,
         editTaskBtn,
         deleteTaskBtn,
-      } = createTaskElements(task, project);
+      } = createTaskElements(task, project, taskIndex);
 
-      // editTaskBtn.addEventListener('click', (event) => {
-      //   loadTaskPopup(task);
-      // });
-
-      deleteTaskBtn.addEventListener('click', (event) => {
-        console.log(project.getProjectTitle());
-        // Access the project array and remove the item that matches the current task
-        projectController.projectArray[
-          projectController.projectIndex(project.getProjectTitle())
-        ].removeToDoItem(task.getTitle());
-
-        loadMainContentProjects(projectName);
-      });
+      // Set class with task priority
+      taskElement.classList.add(task.getPriority());
 
       taskElement.append(
-        checkBox,
-        taskName,
+        taskCheckBox,
+        descriptionCheckBox,
+        descriptionCheckBoxLabel,
+        // taskName,
         taskDescription,
         taskDueDate,
-        taskPriority,
+        // taskPriority,
         editTaskBtn,
         deleteTaskBtn
       );
 
       parentUl.appendChild(taskElement);
+      taskIndex += 1;
     });
   }
 }
@@ -131,26 +127,39 @@ function loadMainContentTasks(
   headerText,
   descriptionText,
   tasks,
-  associatedProject // array of project indices associated with tasks
+  associatedProject, // array of project indices associated with tasks
+  hideCompleted = false
 ) {
   clearContent(contentBody);
   newTaskBtn.style.display = 'none';
   editProjectBtn.style.display = 'none';
   deleteProjectBtn.style.display = 'none';
+  hideCompleted = hideCompletedInput.checked;
+
   // Populate header and description
   contentHeader.textContent = headerText;
   contentDescription.textContent = descriptionText;
 
   const taskList = document.createElement('ul');
   taskList.setAttribute('id', 'task-container');
-  loadTasksArray(tasks, taskList);
+
+  // Load incomplete tasks or All tasks
+  if (hideCompleted) {
+    const incompleteTasks = tasks.filter((task) => !task.isComplete());
+    loadTasksArray(incompleteTasks, taskList);
+  } else {
+    loadTasksArray(tasks, taskList);
+  }
+
   contentBody.append(taskList);
 
   function loadTasksArray(taskArray, parentUl) {
     for (let i = 0; i < taskArray.length; i++) {
       const {
         taskElement,
-        checkBox,
+        taskCheckBox,
+        descriptionCheckBox,
+        descriptionCheckBoxLabel,
         taskName,
         taskDescription,
         taskDueDate,
@@ -159,13 +168,15 @@ function loadMainContentTasks(
         deleteTaskBtn,
       } = createTaskElements(
         taskArray[i],
-        projectController.projectArray[associatedProject[i]]
+        projectController.projectArray[associatedProject[i]],
+        i
       );
 
-      // Create project button
+      // Create associated project button
       const projectBtn = document.createElement('button');
       projectBtn.textContent =
         projectController.projectArray[associatedProject[i]].getProjectTitle();
+
       projectBtn.addEventListener('click', () => {
         loadMainContentProjects(
           projectController.projectArray[associatedProject[i]].getProjectTitle()
@@ -173,12 +184,17 @@ function loadMainContentTasks(
         setReloadContentBody('project');
       });
 
+      // Set class with task priority
+      taskElement.classList.add(taskArray[i].getPriority());
+
       taskElement.append(
-        checkBox,
-        taskName,
+        taskCheckBox,
+        descriptionCheckBox,
+        descriptionCheckBoxLabel,
+        // taskName,
         taskDescription,
         taskDueDate,
-        taskPriority,
+        // taskPriority,
         projectBtn,
         editTaskBtn,
         deleteTaskBtn
@@ -189,9 +205,18 @@ function loadMainContentTasks(
   }
 }
 
-function createTaskElements(task, project) {
+function createTaskElements(task, project, taskID) {
   const taskElement = document.createElement('li');
-  const checkBox = createCheckBox(project, task);
+  const taskCheckBox = createCheckBox(project, task);
+  const descriptionCheckBox = document.createElement('input');
+  descriptionCheckBox.setAttribute('type', 'checkbox');
+  descriptionCheckBox.setAttribute('name', 'description');
+  descriptionCheckBox.setAttribute('id', `description-${taskID}`);
+  descriptionCheckBox.classList.add('description-checkbox');
+  const descriptionCheckBoxLabel = document.createElement('label');
+  descriptionCheckBoxLabel.setAttribute('for', `description-${taskID}`);
+  descriptionCheckBoxLabel.classList.add('description-checkbox-label');
+  descriptionCheckBoxLabel.textContent = task.getTitle();
   const taskName = document.createElement('h3');
   taskName.textContent = task.getTitle();
   taskName.classList.add('task-name');
@@ -204,16 +229,24 @@ function createTaskElements(task, project) {
   } else {
     taskDueDate.textContent = '';
   }
+  taskDueDate.classList.add('task-due-date');
   const taskPriority = document.createElement('p');
   taskPriority.textContent = task.getPriority();
+  taskPriority.classList.add('task-priority');
+
+  // Edit Task Button
   const editTaskBtn = document.createElement('button');
   editTaskBtn.textContent = 'Edit';
+  editTaskBtn.classList.add('edit-task-btn');
+
+  // Delete Task button
   const deleteTaskBtn = document.createElement('button');
   deleteTaskBtn.classList.add('delete');
+  deleteTaskBtn.classList.add('delete-task-btn');
   deleteTaskBtn.textContent = 'Delete';
 
   // Event Listeners
-  checkBox.addEventListener('change', (event) => {
+  taskCheckBox.addEventListener('change', (event) => {
     task.toggleComplete();
   });
 
@@ -221,9 +254,22 @@ function createTaskElements(task, project) {
     loadTaskPopup(task);
   });
 
+  deleteTaskBtn.addEventListener('click', (event) => {
+    console.log(project.getProjectTitle());
+    // Access the project array and remove the item that matches the current task
+    projectController.projectArray[
+      projectController.projectIndex(project.getProjectTitle())
+    ].removeToDoItem(task.getTitle());
+
+    // loadMainContentProjects(project.getProjectTitle());
+    reloadContentBody();
+  });
+
   return {
     taskElement,
-    checkBox,
+    taskCheckBox,
+    descriptionCheckBox,
+    descriptionCheckBoxLabel,
     taskName,
     taskDescription,
     taskDueDate,
@@ -234,6 +280,7 @@ function createTaskElements(task, project) {
 
   function createCheckBox(inputProject, inputTask) {
     const newCheckBox = document.createElement('input');
+    newCheckBox.classList.add('task-complete-checkbox');
     newCheckBox.setAttribute('type', 'checkbox');
     newCheckBox.checked = inputTask.isComplete(); // checkbox will be set as checked if task is complete
     return newCheckBox;
@@ -407,6 +454,8 @@ function loadTaskPopup(task) {
       checkedID,
       false
     );
+    // update date off by one day
+    newToDoItem.setDueDate(new Date(dateInput.value));
     if (task === undefined) {
       // add the task to the current project
       currentProject.addToDoItem(newToDoItem);
@@ -510,12 +559,39 @@ function reloadContentBody(hideCompleted = false) {
   if (recentType === 'project') {
     loadMainContentProjects(currentProject.getProjectTitle(), hideCompleted);
   } else {
+    updateTaskParams();
     loadMainContentTasks(
       recentTaskParams[0],
       recentTaskParams[1],
       recentTaskParams[2],
-      recentTaskParams[3]
+      recentTaskParams[3],
+      hideCompleted
     );
+  }
+  function updateTaskParams() {
+    // function needed for when tasks are deleted
+    switch (recentType) {
+      case 'completed':
+        recentTaskParams[1] = `You've completed ${
+          projectController.getAllCompletedTasks().completedTaskArray.length
+        } task(s)!`;
+        recentTaskParams[2] =
+          projectController.getAllCompletedTasks().completedTaskArray;
+        recentTaskParams[3] =
+          projectController.getAllCompletedTasks().projectIndex;
+        break;
+      case 'today':
+        recentTaskParams[2] =
+          projectController.getAllTodayTasks().todayTaskArray;
+        recentTaskParams[3] = projectController.getAllTodayTasks().projectIndex;
+        break;
+      case 'highPriority':
+        recentTaskParams[2] =
+          projectController.getAllHighPriorityTasks().highPriorityTaskArray;
+        recentTaskParams[3] =
+          projectController.getAllHighPriorityTasks().projectIndex;
+        break;
+    }
   }
 }
 
@@ -589,15 +665,11 @@ function loadDefaultEventListeners() {
 
   completedBtn.addEventListener('click', (event) => {
     // load only completed tasks
-    // loadMainContentTasks(
-    //   'Completed Tasks',
-    //   "Take a look at all the tasks you've completed!",
-    //   projectController.getAllCompletedTasks().completedTaskArray,
-    //   projectController.getAllCompletedTasks().projectIndex
-    // );
     const taskParams = [
       'Completed Tasks',
-      "Take a look at all the tasks you've completed!",
+      `You've completed ${
+        projectController.getAllCompletedTasks().completedTaskArray.length
+      } task(s)!`,
       projectController.getAllCompletedTasks().completedTaskArray,
       projectController.getAllCompletedTasks().projectIndex,
     ];
