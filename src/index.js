@@ -1,5 +1,5 @@
 import './styles.css';
-import { format, isWithinInterval, addDays, isBefore } from 'date-fns';
+import { format, isWithinInterval, addDays } from 'date-fns';
 import * as toDoItemModule from './todoListItem.js';
 import * as projectModule from './project.js';
 import * as projectController from './projectController.js';
@@ -31,7 +31,7 @@ const toDoItem2 = toDoItemModule.toDoItem(
 const toDoItem3 = toDoItemModule.toDoItem(
   'feed dog',
   'bone',
-  new Date('2024-01-31'),
+  new Date('2025-01-31'),
   'high',
   true
 );
@@ -92,12 +92,9 @@ const TODAY = new Date();
 const ONE_WEEK_FROM_TODAY = addDays(TODAY, 7);
 console.log(format(ONE_WEEK_FROM_TODAY, 'yyyy-MM-dd'));
 console.log(
-  `is first date before second date? ${isBefore(
-    new Date('2023-02-03'),
-    ONE_WEEK_FROM_TODAY
-  )}`
+  `${toDoItem3.getDueDate()}: ${toDoItem3.isTaskDueBefore(ONE_WEEK_FROM_TODAY)}`
 );
-console.log(`is date today: ${toDoItem1.isToday()}`);
+// console.log(`is date today: ${toDoItem1.isToday()}`);
 
 projectController.addGeneralProject();
 displayController.loadSideBar();

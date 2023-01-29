@@ -35,6 +35,16 @@
           <input type="checkbox" name="hide-completed" id="hide-completed" />
           <label for="hide-completed">Hide Completed Tasks</label>
           <!-- Sort by priority button here -->
+          <input
+            type="range"
+            name="date-range"
+            id="date-range"
+            min="0"
+            max="90"
+            oninput="this.nextElementSibling.value = this.value"
+          />
+          <output>45</output>
+          <label for="date-range">days</label>
         </div>
         <div id="content-body"></div>
       </div>

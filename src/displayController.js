@@ -1,3 +1,4 @@
+/* eslint-disable default-case */
 import { format, isWithinInterval, addDays, isValid } from 'date-fns';
 import * as projectController from './projectController.js';
 import * as toDoItemModule from './todoListItem.js';
@@ -11,6 +12,7 @@ const contentDescription = document.querySelector('#content-description');
 const editProjectBtn = document.querySelector('#edit-project-btn');
 const deleteProjectBtn = document.querySelector('#delete-project-btn');
 const hideCompletedInput = document.querySelector('#hide-completed');
+const dateRangeInput = document.querySelector('#date-range');
 const contentBody = document.querySelector('#content-body');
 const generalBtn = document.querySelector('#generalBtn');
 const highPriorityBtn = document.querySelector('#highPriorityBtn');
@@ -594,6 +596,13 @@ function reloadContentBody(hideCompleted = false) {
         recentTaskParams[3] =
           projectController.getAllHighPriorityTasks().projectIndex;
         break;
+      case 'upcoming':
+        const selectedDate = addDays(new Date(), dateRangeInput.value);
+        recentTaskParams[2] =
+          projectController.getAllBeforeTasks(selectedDate).beforeTaskArray;
+        recentTaskParams[3] =
+          projectController.getAllBeforeTasks(selectedDate).projectIndex;
+        break;
     }
   }
 }
@@ -625,6 +634,10 @@ function loadDefaultEventListeners() {
     } else {
       reloadContentBody(false);
     }
+  });
+
+  dateRangeInput.addEventListener('input', (event) => {
+    reloadContentBody();
   });
 
   highPriorityBtn.addEventListener('click', (event) => {
@@ -659,6 +672,23 @@ function loadDefaultEventListeners() {
       taskParams[3]
     );
     setReloadContentBody('today', taskParams);
+  });
+
+  upcomingBtn.addEventListener('click', (event) => {
+    const selectedDate = addDays(new Date(), dateRangeInput.value);
+    const taskParams = [
+      'Upcoming Tasks',
+      '',
+      projectController.getAllBeforeTasks(selectedDate).beforeTaskArray,
+      projectController.getAllBeforeTasks(selectedDate).projectIndex,
+    ];
+    loadMainContentTasks(
+      taskParams[0],
+      taskParams[1],
+      taskParams[2],
+      taskParams[3]
+    );
+    setReloadContentBody('upcoming', taskParams);
   });
 
   generalBtn.addEventListener('click', (event) => {

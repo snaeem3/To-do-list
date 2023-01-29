@@ -69,6 +69,16 @@ export const project = (
     return todayTasks;
   }
 
+  function getBeforeTasks(date) {
+    const beforeTasks = [];
+    for (let i = 0; i < numTasks(); i += 1) {
+      if (toDoArray[i].isTaskDueBefore(date)) {
+        beforeTasks.push(toDoArray[i]);
+      }
+    }
+    return beforeTasks;
+  }
+
   return {
     getProjectTitle,
     getProjectDescription,
@@ -84,5 +94,6 @@ export const project = (
     getIncompletedTasks,
     getHighPriorityTasks,
     getTodayTasks,
+    getBeforeTasks,
   };
 };

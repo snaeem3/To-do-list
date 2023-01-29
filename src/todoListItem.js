@@ -1,4 +1,4 @@
-import { format, isWithinInterval, isSameDay } from 'date-fns';
+import { format, isWithinInterval, isBefore, isSameDay } from 'date-fns';
 
 const TODAY = new Date();
 
@@ -16,6 +16,7 @@ export const toDoItem = (
   const isComplete = () => complete;
   const isHighPriority = () => priority === 'high';
   const isToday = () => isSameDay(TODAY, dueDate);
+  const isTaskDueBefore = (date) => isBefore(dueDate, date); // if the task is due before the given date
 
   const setTitle = (value) => (title = value);
   const setDescription = (value) => (description = value);
@@ -35,6 +36,7 @@ export const toDoItem = (
     isComplete,
     isHighPriority,
     isToday,
+    isTaskDueBefore,
     setTitle,
     setDescription,
     setDueDate,
