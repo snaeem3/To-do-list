@@ -80,6 +80,7 @@ function loadMainContentProjects(
 
   const taskList = document.createElement('ul');
   taskList.setAttribute('id', 'task-container');
+  taskList.classList.add('main-content-projects');
   loadTasks(currentProject, taskList);
   contentBody.append(taskList);
 
@@ -142,6 +143,7 @@ function loadMainContentTasks(
 
   const taskList = document.createElement('ul');
   taskList.setAttribute('id', 'task-container');
+  taskList.classList.add('main-content-tasks');
 
   // Load incomplete tasks or All tasks
   if (hideCompleted) {
@@ -236,14 +238,15 @@ function createTaskElements(task, project, taskID) {
 
   // Edit Task Button
   const editTaskBtn = document.createElement('button');
-  editTaskBtn.textContent = 'Edit';
+  // editTaskBtn.textContent = 'Edit';
   editTaskBtn.classList.add('edit-task-btn');
+  editTaskBtn.classList.add('edit');
 
   // Delete Task button
   const deleteTaskBtn = document.createElement('button');
   deleteTaskBtn.classList.add('delete');
   deleteTaskBtn.classList.add('delete-task-btn');
-  deleteTaskBtn.textContent = 'Delete';
+  // deleteTaskBtn.textContent = 'Delete';
 
   // Event Listeners
   taskCheckBox.addEventListener('change', (event) => {

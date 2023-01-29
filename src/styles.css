@@ -51,7 +51,20 @@ ul {
 }
 
 .delete {
-  background: rgb(187, 0, 0);
+  /* background: rgb(187, 0, 0); */
+  background: rgb(255, 54, 54) url(images/trash-2.svg) no-repeat;
+  background-position: center;
+  background-size: 75%;
+  padding: 1.5rem;
+  width: fit-content;
+}
+
+.edit {
+  background: rgb(29, 199, 255) url(images/edit.svg) no-repeat;
+  background-position: center;
+  background-size: 75%;
+  padding: 1.5rem;
+  width: fit-content;
 }
 
 main {
@@ -66,13 +79,20 @@ main {
 #task-container li {
   display: grid;
   /* grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); */
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  grid-template-rows: 1fr;
+  /* grid-template-columns: 0.2fr repeat(5, minmax(0, 1fr)); */
   align-items: baseline;
   padding: var(--section-padding);
   margin: 8px 0;
   background: #fff7d2;
   /* border-radius: var(--border-radius-default); */
+}
+
+/* Main content tasks has additional icon */
+.main-content-projects li {
+  grid-template-columns: 0.2fr repeat(4, minmax(0, 1fr));
+}
+.main-content-tasks li {
+  grid-template-columns: 0.2fr repeat(5, minmax(0, 1fr));
 }
 
 li.low {
@@ -134,11 +154,11 @@ li.high {
 }
 
 .edit-task-btn {
-  grid-column: -2;
+  /* grid-column: -2; */
 }
 
 .delete-task-btn {
-  grid-column: -1;
+  /* grid-column: -1; */
 }
 
 /* FORM STYLING */
