@@ -96,6 +96,12 @@ console.log(
 );
 // console.log(`is date today: ${toDoItem1.isToday()}`);
 
+// Sort tests
+const sortedTasks = project1.getPrioritySortedTasks();
+sortedTasks.forEach((task) => {
+  console.log(`${task.getTitle()} has a priority of ${task.getPriority()}`);
+});
+
 projectController.addGeneralProject();
 displayController.loadSideBar();
 displayController.loadMainContentProjects('General');

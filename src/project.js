@@ -79,6 +79,25 @@ export const project = (
     return beforeTasks;
   }
 
+  function getPrioritySortedTasks() {
+    const prioritySortedArray = toDoArray.sort(
+      (a, b) =>
+        priorityToNumber(a.getPriority()) - priorityToNumber(b.getPriority())
+    );
+
+    return prioritySortedArray;
+
+    function priorityToNumber(priority) {
+      if (priority === 'high') {
+        return -1;
+      }
+      if (priority === 'medium') {
+        return 0;
+      }
+      return 1;
+    }
+  }
+
   return {
     getProjectTitle,
     getProjectDescription,
@@ -95,5 +114,6 @@ export const project = (
     getHighPriorityTasks,
     getTodayTasks,
     getBeforeTasks,
+    getPrioritySortedTasks,
   };
 };
