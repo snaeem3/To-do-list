@@ -3,6 +3,7 @@ import { format, isWithinInterval, addDays, isValid } from 'date-fns';
 import * as projectController from './projectController.js';
 import * as toDoItemModule from './todoListItem.js';
 import * as projectModule from './project.js';
+import getPrioritySortedTasks from './taskSort.js';
 
 const body = document.querySelector('body');
 const projectList = document.querySelector('#project-list');
@@ -12,6 +13,7 @@ const contentDescription = document.querySelector('#content-description');
 const editProjectBtn = document.querySelector('#edit-project-btn');
 const deleteProjectBtn = document.querySelector('#delete-project-btn');
 const hideCompletedInput = document.querySelector('#hide-completed');
+const prioritySortInput = document.querySelector('#priority-sort');
 const dateRangeInput = document.querySelector('#date-range');
 const dateRangeOutput = document.querySelector('#date-range-output');
 const dateRangeLabel = document.querySelector('#date-range-label');
@@ -92,11 +94,17 @@ function loadMainContentProjects(
   contentBody.append(taskList);
 
   function loadTasks(project, parentUl) {
-    const toDoArray = hideCompleted
+    let taskArray = hideCompleted
       ? project.getIncompletedTasks()
       : project.getToDoItems();
+
+    // sort tasks by priority if checked
+    if (prioritySortInput.checked) {
+      taskArray = getPrioritySortedTasks(taskArray);
+    }
+
     let taskIndex = 0;
-    toDoArray.forEach((task) => {
+    taskArray.forEach((task) => {
       const {
         taskElement,
         taskCheckBox,
@@ -160,6 +168,11 @@ function loadMainContentTasks(
   const taskList = document.createElement('ul');
   taskList.setAttribute('id', 'task-container');
   taskList.classList.add('main-content-tasks');
+
+  // Sort tasks if checked
+  if (prioritySortInput.checked) {
+    tasks = getPrioritySortedTasks(tasks);
+  }
 
   // Load incomplete tasks or All tasks
   if (hideCompleted) {
@@ -243,7 +256,8 @@ function createTaskElements(task, project, taskID) {
   taskDescription.textContent = task.getDescription();
   const taskDueDate = document.createElement('p');
   if (isValid(task.getDueDate())) {
-    taskDueDate.textContent = format(task.getDueDate(), 'PPP');
+    taskDueDate.textContent = format(task.getDueDate(), 'PP');
+    // taskDueDate.textContent = `${task.getRemainingDays()} day(s) remaining`;
   } else {
     taskDueDate.textContent = '';
   }
@@ -342,11 +356,18 @@ function loadProjectPopup(project) {
   );
   const descriptionLabel = createLabel('Project Description', descriptionInput);
 
+  const projectColorInput = document.createElement('input');
+  projectColorInput.setAttribute('type', 'color');
+  projectColorInput.setAttribute('name', 'project-color');
+  projectColorInput.setAttribute('id', 'project-color');
+  const colorLabel = createLabel('Project Color', projectColorInput);
+
   const submitProjectBtn = createSubmitBtn();
 
   if (project !== undefined) {
     nameInput.value = project.getProjectTitle();
     descriptionInput.value = project.getProjectDescription();
+    projectColorInput.value = project.getColor();
   }
 
   // Submit project data
@@ -354,7 +375,8 @@ function loadProjectPopup(project) {
     event.preventDefault();
     const newProject = projectModule.project(
       nameInput.value,
-      descriptionInput.value
+      descriptionInput.value,
+      projectColorInput.value
     );
 
     if (project === undefined) {
@@ -370,6 +392,10 @@ function loadProjectPopup(project) {
       projectController.projectArray[
         projectController.projectIndex(project.getProjectTitle())
       ].setProjectDescription(descriptionInput.value);
+      // 3) set project color
+      projectController.projectArray[
+        projectController.projectIndex(project.getProjectTitle())
+      ].setColor(projectColorInput.value);
     }
 
     loadSideBar();
@@ -384,6 +410,8 @@ function loadProjectPopup(project) {
     nameInput,
     descriptionLabel,
     descriptionInput,
+    colorLabel,
+    projectColorInput,
     submitProjectBtn,
     closeProjectFormBtn
   );
@@ -654,6 +682,10 @@ function loadDefaultEventListeners() {
     } else {
       reloadContentBody(false);
     }
+  });
+
+  prioritySortInput.addEventListener('change', (event) => {
+    reloadContentBody();
   });
 
   dateRangeInput.addEventListener('input', (event) => {

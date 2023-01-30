@@ -31,7 +31,7 @@ const toDoItem2 = toDoItemModule.toDoItem(
 const toDoItem3 = toDoItemModule.toDoItem(
   'feed dog',
   'bone',
-  new Date('2025-01-31'),
+  new Date('2023-01-30'),
   'high',
   true
 );
@@ -95,12 +95,14 @@ console.log(
   `${toDoItem3.getDueDate()}: ${toDoItem3.isTaskDueBefore(ONE_WEEK_FROM_TODAY)}`
 );
 // console.log(`is date today: ${toDoItem1.isToday()}`);
+console.log(`Days until task 3 is due: ${toDoItem3.getRemainingDays()}`);
+console.log(`Today: ${TODAY}`);
 
 // Sort tests
-const sortedTasks = project1.getPrioritySortedTasks();
-sortedTasks.forEach((task) => {
-  console.log(`${task.getTitle()} has a priority of ${task.getPriority()}`);
-});
+// const sortedTasks = project1.getPrioritySortedTasks();
+// sortedTasks.forEach((task) => {
+//   console.log(`${task.getTitle()} has a priority of ${task.getPriority()}`);
+// });
 
 projectController.addGeneralProject();
 displayController.loadSideBar();

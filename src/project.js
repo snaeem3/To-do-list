@@ -3,16 +3,19 @@
 export const project = (
   projectTitle = 'Project',
   projectDescription = 'Project Description',
+  color = '#000000',
   toDoArray = []
 ) => {
   const getProjectTitle = () => projectTitle;
   const getProjectDescription = () => projectDescription;
   const getToDoItems = () => toDoArray;
+  const getColor = () => color;
 
   const setProjectTitle = (title) => (projectTitle = title);
   const setProjectDescription = (description) =>
     (projectDescription = description);
   const setToDoArray = (array) => (toDoArray = array);
+  const setColor = (newColor) => (color = newColor);
 
   const addToDoItem = (toDoItem) => toDoArray.push(toDoItem);
   const removeToDoItem = (itemName) =>
@@ -102,9 +105,11 @@ export const project = (
     getProjectTitle,
     getProjectDescription,
     getToDoItems,
+    getColor,
     setProjectTitle,
     setProjectDescription,
     setToDoArray,
+    setColor,
     addToDoItem,
     removeToDoItem,
     getToDoIndex,
@@ -114,6 +119,6 @@ export const project = (
     getHighPriorityTasks,
     getTodayTasks,
     getBeforeTasks,
-    getPrioritySortedTasks,
+    // getPrioritySortedTasks,
   };
 };
