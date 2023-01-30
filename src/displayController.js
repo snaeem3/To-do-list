@@ -13,6 +13,8 @@ const editProjectBtn = document.querySelector('#edit-project-btn');
 const deleteProjectBtn = document.querySelector('#delete-project-btn');
 const hideCompletedInput = document.querySelector('#hide-completed');
 const dateRangeInput = document.querySelector('#date-range');
+const dateRangeOutput = document.querySelector('#date-range-output');
+const dateRangeLabel = document.querySelector('#date-range-label');
 const contentBody = document.querySelector('#content-body');
 const generalBtn = document.querySelector('#generalBtn');
 const highPriorityBtn = document.querySelector('#highPriorityBtn');
@@ -75,6 +77,9 @@ function loadMainContentProjects(
     deleteProjectBtn.style.display = 'none';
     editProjectBtn.style.display = 'none';
   }
+
+  // Hide upcoming days slider
+  hideDateRangeElements();
 
   // Populate header and description
   contentHeader.textContent = projectName;
@@ -142,6 +147,15 @@ function loadMainContentTasks(
   // Populate header and description
   contentHeader.textContent = headerText;
   contentDescription.textContent = descriptionText;
+
+  // Hide upcoming days slider
+  hideDateRangeElements();
+  if (recentType === 'upcoming') {
+    // Show upcoming days slider
+    dateRangeInput.style.display = 'block';
+    dateRangeOutput.style.display = 'block';
+    dateRangeLabel.style.display = 'block';
+  }
 
   const taskList = document.createElement('ul');
   taskList.setAttribute('id', 'task-container');
@@ -290,6 +304,12 @@ function createTaskElements(task, project, taskID) {
     newCheckBox.checked = inputTask.isComplete(); // checkbox will be set as checked if task is complete
     return newCheckBox;
   }
+}
+
+function hideDateRangeElements() {
+  dateRangeInput.style.display = 'none';
+  dateRangeOutput.style.display = 'none';
+  dateRangeLabel.style.display = 'none';
 }
 
 function loadProjectPopup(project) {
@@ -648,14 +668,13 @@ function loadDefaultEventListeners() {
       projectController.getAllHighPriorityTasks().highPriorityTaskArray,
       projectController.getAllHighPriorityTasks().projectIndex,
     ];
+    setReloadContentBody('highPriority', taskParams);
     loadMainContentTasks(
       taskParams[0],
       taskParams[1],
       taskParams[2],
       taskParams[3]
     );
-
-    setReloadContentBody('highPriority', taskParams);
   });
 
   todayBtn.addEventListener('click', (event) => {
@@ -665,13 +684,13 @@ function loadDefaultEventListeners() {
       projectController.getAllTodayTasks().todayTaskArray,
       projectController.getAllTodayTasks().projectIndex,
     ];
+    setReloadContentBody('today', taskParams);
     loadMainContentTasks(
       taskParams[0],
       taskParams[1],
       taskParams[2],
       taskParams[3]
     );
-    setReloadContentBody('today', taskParams);
   });
 
   upcomingBtn.addEventListener('click', (event) => {
@@ -682,18 +701,18 @@ function loadDefaultEventListeners() {
       projectController.getAllBeforeTasks(selectedDate).beforeTaskArray,
       projectController.getAllBeforeTasks(selectedDate).projectIndex,
     ];
+    setReloadContentBody('upcoming', taskParams);
     loadMainContentTasks(
       taskParams[0],
       taskParams[1],
       taskParams[2],
       taskParams[3]
     );
-    setReloadContentBody('upcoming', taskParams);
   });
 
   generalBtn.addEventListener('click', (event) => {
-    loadMainContentProjects('General');
     setReloadContentBody('project');
+    loadMainContentProjects('General');
   });
 
   completedBtn.addEventListener('click', (event) => {
@@ -707,13 +726,13 @@ function loadDefaultEventListeners() {
       projectController.getAllCompletedTasks().projectIndex,
     ];
 
+    setReloadContentBody('completed', taskParams);
     loadMainContentTasks(
       taskParams[0],
       taskParams[1],
       taskParams[2],
       taskParams[3]
     );
-    setReloadContentBody('completed', taskParams);
   });
 }
 
