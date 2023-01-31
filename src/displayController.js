@@ -47,6 +47,9 @@ function loadSideBar() {
       const projectBtn = document.createElement('button');
       projectBtn.classList.add('project-name-btn');
       projectBtn.textContent = projectName;
+      projectBtn.style['background-color'] = projectController
+        .getProject(projectName)
+        .getColor();
       projectBtn.addEventListener('click', () => {
         setCurrentProject(projectName);
         loadMainContentProjects(projectName);
@@ -207,6 +210,8 @@ function loadMainContentTasks(
       const projectBtn = document.createElement('button');
       projectBtn.textContent =
         projectController.projectArray[associatedProject[i]].getProjectTitle();
+      projectBtn.style['background-color'] =
+        projectController.projectArray[associatedProject[i]].getColor();
 
       projectBtn.addEventListener('click', () => {
         loadMainContentProjects(
