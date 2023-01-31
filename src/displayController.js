@@ -117,8 +117,9 @@ function loadMainContentProjects(
         taskDescription,
         taskDueDate,
         taskPriority,
-        editTaskBtn,
-        deleteTaskBtn,
+        buttonContainer,
+        // editTaskBtn,
+        // deleteTaskBtn,
       } = createTaskElements(task, project, taskIndex);
 
       // Set class with task priority
@@ -132,8 +133,9 @@ function loadMainContentProjects(
         taskDescription,
         taskDueDate,
         // taskPriority,
-        editTaskBtn,
-        deleteTaskBtn
+        buttonContainer
+        // editTaskBtn,
+        // deleteTaskBtn
       );
 
       parentUl.appendChild(taskElement);
@@ -198,8 +200,9 @@ function loadMainContentTasks(
         taskDescription,
         taskDueDate,
         taskPriority,
-        editTaskBtn,
-        deleteTaskBtn,
+        buttonContainer,
+        // editTaskBtn,
+        // deleteTaskBtn,
       } = createTaskElements(
         taskArray[i],
         projectController.projectArray[associatedProject[i]],
@@ -212,6 +215,8 @@ function loadMainContentTasks(
         projectController.projectArray[associatedProject[i]].getProjectTitle();
       projectBtn.style['background-color'] =
         projectController.projectArray[associatedProject[i]].getColor();
+      projectBtn.classList.add('project-btn');
+      buttonContainer.prepend(projectBtn);
 
       projectBtn.addEventListener('click', () => {
         loadMainContentProjects(
@@ -231,9 +236,10 @@ function loadMainContentTasks(
         taskDescription,
         taskDueDate,
         // taskPriority,
-        projectBtn,
-        editTaskBtn,
-        deleteTaskBtn
+        buttonContainer
+        // projectBtn,
+        // editTaskBtn,
+        // deleteTaskBtn
       );
 
       parentUl.appendChild(taskElement);
@@ -271,6 +277,10 @@ function createTaskElements(task, project, taskID) {
   taskPriority.textContent = task.getPriority();
   taskPriority.classList.add('task-priority');
 
+  // Button Container
+  const buttonContainer = document.createElement('div');
+  buttonContainer.classList.add('button-container');
+
   // Edit Task Button
   const editTaskBtn = document.createElement('button');
   // editTaskBtn.textContent = 'Edit';
@@ -282,6 +292,8 @@ function createTaskElements(task, project, taskID) {
   deleteTaskBtn.classList.add('delete');
   deleteTaskBtn.classList.add('delete-task-btn');
   // deleteTaskBtn.textContent = 'Delete';
+
+  buttonContainer.append(editTaskBtn, deleteTaskBtn);
 
   // Event Listeners
   taskCheckBox.addEventListener('change', (event) => {
@@ -312,8 +324,9 @@ function createTaskElements(task, project, taskID) {
     taskDescription,
     taskDueDate,
     taskPriority,
-    editTaskBtn,
-    deleteTaskBtn,
+    buttonContainer,
+    // editTaskBtn,
+    // deleteTaskBtn,
   };
 
   function createCheckBox(inputProject, inputTask) {
@@ -338,6 +351,10 @@ function loadProjectPopup(project) {
   const projectPopup = document.createElement('div');
   const projectForm = document.createElement('form');
   projectForm.setAttribute('id', 'project-form');
+
+  const projectFormTitle = document.createElement('h2');
+  projectFormTitle.textContent = 'Enter Project Details';
+  projectFormTitle.setAttribute('id', 'project-form-title');
 
   const nameInput = document.createElement('input');
   setInputValues(
@@ -411,6 +428,7 @@ function loadProjectPopup(project) {
   const closeProjectFormBtn = createCloseFormBtn(projectPopup);
 
   projectForm.append(
+    projectFormTitle,
     nameLabel,
     nameInput,
     descriptionLabel,
@@ -431,6 +449,11 @@ function loadTaskPopup(task) {
   const taskPopup = document.createElement('div');
   const taskForm = document.createElement('form');
   taskForm.setAttribute('id', 'task-form');
+
+  // Task form header
+  const taskFormTitle = document.createElement('h2');
+  taskFormTitle.textContent = 'Enter Task Details';
+  taskFormTitle.setAttribute('id', 'task-form-title');
 
   // Task name input
   const nameInput = document.createElement('input');
@@ -532,6 +555,7 @@ function loadTaskPopup(task) {
   const closeTaskFormBtn = createCloseFormBtn(taskPopup);
 
   taskForm.append(
+    taskFormTitle,
     nameLabel,
     nameInput,
     descriptionLabel,
