@@ -32,21 +32,39 @@
         </div>
         <button id="newTaskBtn">New Task</button>
         <div id="task-view-options">
-          <input type="checkbox" name="hide-completed" id="hide-completed" />
-          <label for="hide-completed">Hide Completed Tasks</label>
-          <input type="checkbox" name="priority-sort" id="priority-sort" />
-          <label for="priority-sort">Sort by Priority</label>
+          <div class="checkbox-container">
+            Hide Completed Tasks
+            <input
+              type="checkbox"
+              name="hide-completed"
+              id="hide-completed"
+              class="toggle-checkbox"
+            />
+            <label for="hide-completed" class="toggle"></label>
+          </div>
+          <div class="checkbox-container">
+            Sort by Priority
+            <input
+              type="checkbox"
+              name="priority-sort"
+              id="priority-sort"
+              class="toggle-checkbox"
+            />
+            <label for="priority-sort" class="toggle"></label>
+          </div>
           <!-- Toggle due date vs. days remaining here -->
-          <input
-            type="range"
-            name="date-range"
-            id="date-range"
-            min="0"
-            max="90"
-            oninput="this.nextElementSibling.value = this.value"
-          />
-          <output id="date-range-output">45</output>
-          <label for="date-range" id="date-range-label">days</label>
+          <div class="slider-container">
+            <input
+              type="range"
+              name="date-range"
+              id="date-range"
+              min="0"
+              max="90"
+              oninput="this.nextElementSibling.value = this.value"
+            />
+            <output id="date-range-output">45</output>
+            <label for="date-range" id="date-range-label">days</label>
+          </div>
         </div>
         <div id="content-body"></div>
       </div>
