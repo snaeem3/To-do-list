@@ -152,7 +152,22 @@ main {
 }
 
 #task-view-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.2rem;
+  color: white;
+  background: rgba(20, 20, 20, 0.877);
+  /* border-radius: 2rem; */
+  padding: var(--section-padding);
+  /* margin: var(--section-margin); */
+}
+
+.checkbox-container {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  border-right: solid 2px white;
 }
 
 .toggle-checkbox {
@@ -184,8 +199,12 @@ main {
   transition: 0.3s;
 }
 
-.toggle-checkbox:checked + label {
+#hide-completed:checked + label {
   background: #bada55;
+}
+
+#priority-sort:checked + label {
+  background: rgb(253, 76, 76);
 }
 
 .toggle-checkbox:checked + label::after {
@@ -204,11 +223,11 @@ main {
   /* grid-template-columns: 0.2fr repeat(3, minmax(0, 2fr)); */
   /* grid-template-columns: 0.2fr minmax(0, 3fr) 1fr minmax(0, 2fr); */
   grid-template-columns: min-content minmax(0, 3fr) min-content minmax(0, 2fr);
+  row-gap: 0.5rem;
   align-items: baseline;
   padding: var(--section-padding);
-  margin: 8px 0;
+  margin: 8px;
   background: #fff7d2;
-  row-gap: 0.5rem;
 }
 
 li.low {
@@ -339,9 +358,7 @@ li.high {
   /* grid-column: -1; */
 }
 
-/* FORM STYLING */
-
-form {
+.pop-up {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -349,6 +366,16 @@ form {
   transform: translate(-50%, -50%);
   width: 50%;
   background: lightcyan;
+  z-index: 99;
+}
+
+.pop-up ~ * {
+  filter: blur(5px);
+}
+
+/* FORM STYLING */
+
+form {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;

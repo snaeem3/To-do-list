@@ -347,8 +347,10 @@ function hideDateRangeElements() {
 function loadProjectPopup(project) {
   newProjectBtn.setAttribute('disabled', true);
   disableAllButtons();
+  disableAllInputs();
 
   const projectPopup = document.createElement('div');
+  projectPopup.classList.add('pop-up');
   const projectForm = document.createElement('form');
   projectForm.setAttribute('id', 'project-form');
 
@@ -439,14 +441,16 @@ function loadProjectPopup(project) {
     closeProjectFormBtn
   );
   projectPopup.append(projectForm);
-  body.append(projectPopup);
+  body.prepend(projectPopup);
 }
 
 function loadTaskPopup(task) {
   newTaskBtn.setAttribute('disabled', true);
   disableAllButtons();
+  disableAllInputs();
 
   const taskPopup = document.createElement('div');
+  taskPopup.classList.add('pop-up');
   const taskForm = document.createElement('form');
   taskForm.setAttribute('id', 'task-form');
 
@@ -570,7 +574,7 @@ function loadTaskPopup(task) {
 
   taskPopup.append(taskForm);
 
-  body.append(taskPopup);
+  body.prepend(taskPopup);
 }
 
 function setInputValues(input, type, name, id, placeholder, required = false) {
@@ -612,6 +616,7 @@ function closePopup(popup, btn) {
   popup.remove();
   // btn.disabled = false;
   enableAllButtons();
+  enableAllInputs();
 }
 
 function enableAllButtons() {
@@ -620,9 +625,21 @@ function enableAllButtons() {
   });
 }
 
+function enableAllInputs() {
+  document.querySelectorAll('input').forEach((input) => {
+    input.disabled = false;
+  });
+}
+
 function disableAllButtons() {
   document.querySelectorAll('button').forEach((button) => {
     button.disabled = true;
+  });
+}
+
+function disableAllInputs() {
+  document.querySelectorAll('input').forEach((input) => {
+    input.disabled = true;
   });
 }
 
