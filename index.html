@@ -11,17 +11,40 @@
       <div id="sidebar">
         <h1>To-do List</h1>
         <ul id="sidebar-main-buttons">
-          <li><button id="generalBtn">General</button></li>
-          <li><button id="highPriorityBtn">High Priority</button></li>
-          <li><button id="todayBtn">Today</button></li>
-          <li><button id="upcomingBtn">Upcoming</button></li>
-          <li><button id="completedBtn">Completed</button></li>
+          <li>
+            <button id="generalBtn" data-tool-tip="View your General tasks">
+              General
+            </button>
+          </li>
+          <li>
+            <button
+              id="highPriorityBtn"
+              data-tool-tip="View your high priority tasks"
+            >
+              High Priority
+            </button>
+          </li>
+          <li>
+            <button id="todayBtn" data-tool-tip="View tasks due today">
+              Today
+            </button>
+          </li>
+          <li>
+            <button id="upcomingBtn" data-tool-tip="View your upcoming tasks">
+              Upcoming
+            </button>
+          </li>
+          <li>
+            <button id="completedBtn" data-tool-tip="View your completed tasks">
+              Completed
+            </button>
+          </li>
         </ul>
         <div id="project-container">
           <h2>Projects</h2>
           <ul id="project-list"></ul>
         </div>
-        <button id="newProjectBtn">Create Project</button>
+        <button id="newProjectBtn" class="new">Create Project</button>
       </div>
       <div id="content-container">
         <div id="project-info">
@@ -52,7 +75,8 @@
             <label for="priority-sort" class="toggle"></label>
           </div>
           <!-- Toggle due date vs. days remaining here -->
-          <div class="slider-container">
+          <div class="slider-container" id="date-range-container">
+            Days away:
             <input
               type="range"
               name="date-range"
@@ -62,10 +86,10 @@
               oninput="this.nextElementSibling.value = this.value"
             />
             <output id="date-range-output">45</output>
-            <label for="date-range" id="date-range-label">days</label>
+            <!-- <label for="date-range" id="date-range-label">days</label> -->
           </div>
         </div>
-        <button id="newTaskBtn">New Task</button>
+        <button id="newTaskBtn" class="new">Create Task</button>
         <div id="content-body"></div>
       </div>
     </main>
