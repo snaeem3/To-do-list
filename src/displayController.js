@@ -14,6 +14,7 @@ const editProjectBtn = document.querySelector('#edit-project-btn');
 const deleteProjectBtn = document.querySelector('#delete-project-btn');
 const hideCompletedInput = document.querySelector('#hide-completed');
 const prioritySortInput = document.querySelector('#priority-sort');
+const dateRangeContainer = document.querySelector('#date-range-container');
 const dateRangeInput = document.querySelector('#date-range');
 const dateRangeOutput = document.querySelector('#date-range-output');
 const dateRangeLabel = document.querySelector('#date-range-label');
@@ -46,6 +47,13 @@ function loadSideBar() {
       projectElement.classList.add('project');
       const projectBtn = document.createElement('button');
       projectBtn.classList.add('project-name-btn');
+      let dataToolTipText = projectController
+        .getProject(projectName)
+        .getProjectDescription();
+      if (dataToolTipText.length < 1) {
+        dataToolTipText = 'No Project Description';
+      }
+      projectBtn.setAttribute('data-tool-tip', dataToolTipText);
       projectBtn.textContent = projectName;
       projectBtn.style['background-color'] = projectController
         .getProject(projectName)
@@ -71,7 +79,7 @@ function loadMainContentProjects(
   hideCompleted = false
 ) {
   clearContent(contentBody);
-  newTaskBtn.style.display = 'block';
+  newTaskBtn.style.display = 'flex';
   editProjectBtn.style.display = 'block';
   deleteProjectBtn.style.display = 'block';
   setCurrentProject(projectName);
@@ -165,9 +173,10 @@ function loadMainContentTasks(
   hideDateRangeElements();
   if (recentType === 'upcoming') {
     // Show upcoming days slider
-    dateRangeInput.style.display = 'block';
-    dateRangeOutput.style.display = 'block';
-    dateRangeLabel.style.display = 'block';
+    // dateRangeInput.style.display = 'block';
+    // dateRangeOutput.style.display = 'block';
+    // dateRangeLabel.style.display = 'block';
+    dateRangeContainer.style.display = 'flex';
   }
 
   const taskList = document.createElement('ul');
@@ -339,9 +348,10 @@ function createTaskElements(task, project, taskID) {
 }
 
 function hideDateRangeElements() {
-  dateRangeInput.style.display = 'none';
-  dateRangeOutput.style.display = 'none';
-  dateRangeLabel.style.display = 'none';
+  // dateRangeInput.style.display = 'none';
+  // dateRangeOutput.style.display = 'none';
+  // dateRangeLabel.style.display = 'none';
+  dateRangeContainer.style.display = 'none';
 }
 
 function loadProjectPopup(project) {
