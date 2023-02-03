@@ -4,9 +4,10 @@ import {
   isBefore,
   isSameDay,
   differenceInCalendarDays,
+  startOfDay,
 } from 'date-fns';
 
-const TODAY = new Date();
+const TODAY = startOfDay(new Date());
 
 export const toDoItem = (
   title,
@@ -24,6 +25,7 @@ export const toDoItem = (
   const isHighPriority = () => priority === 'high';
   const isToday = () => isSameDay(TODAY, dueDate);
   const isTaskDueBefore = (date) => isBefore(dueDate, date); // if the task is due before the given date
+  const isOverDue = () => isTaskDueBefore(TODAY);
 
   const setTitle = (value) => (title = value);
   const setDescription = (value) => (description = value);
@@ -45,6 +47,7 @@ export const toDoItem = (
     isHighPriority,
     isToday,
     isTaskDueBefore,
+    isOverDue,
     setTitle,
     setDescription,
     setDueDate,

@@ -15,7 +15,7 @@ import * as displayController from './displayController';
 const toDoItem1 = toDoItemModule.toDoItem(
   'buy groceries',
   'eggs and milk',
-  new Date('2023-01-27'),
+  new Date('2023-02-02'),
   'low',
   true
 );
@@ -97,6 +97,7 @@ console.log(
 // console.log(`is date today: ${toDoItem1.isToday()}`);
 console.log(`Days until task 3 is due: ${toDoItem3.getRemainingDays()}`);
 console.log(`Today: ${TODAY}`);
+console.log(toDoItem1.isOverDue());
 
 // Sort tests
 // const sortedTasks = project1.getPrioritySortedTasks();

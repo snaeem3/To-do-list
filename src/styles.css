@@ -377,6 +377,42 @@ li.high {
   margin: var(--section-margin);
 }
 
+.overdue {
+  color: red;
+}
+
+.overdue::after {
+  content: "";
+  background: url(images/alert-circle.svg) no-repeat;
+  background-position: center;
+  background-size: 75%;
+  padding: 1rem;
+}
+
+.task-due-date[data-tool-tip] {
+  position: relative;
+}
+
+.task-due-date[data-tool-tip]::before {
+  content: attr(data-tool-tip);
+  display: block;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  font-size: 0.8rem;
+  background: white;
+  border: solid 1px black;
+  padding: var(--section-padding);
+  border-radius: var(--border-radius-default);
+  transform: scale(0);
+  transition: transform ease-out 150ms, bottom ease-out 150ms;
+}
+
+.task-due-date[data-tool-tip]:hover::before {
+  transform: scale(1);
+  bottom: 115%;
+}
+
 .description-checkbox {
   display: none;
 }

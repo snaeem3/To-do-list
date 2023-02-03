@@ -278,6 +278,11 @@ function createTaskElements(task, project, taskID) {
   if (isValid(task.getDueDate())) {
     taskDueDate.textContent = format(task.getDueDate(), 'PP');
     // taskDueDate.textContent = `${task.getRemainingDays()} day(s) remaining`;
+    if (task.isOverDue()) {
+      taskDueDate.classList.add('overdue');
+    }
+    const dataToolTipText = `Due in ${task.getRemainingDays()} day(s)`;
+    taskDueDate.setAttribute('data-tool-tip', dataToolTipText);
   } else {
     taskDueDate.textContent = '';
   }
