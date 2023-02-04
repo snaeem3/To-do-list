@@ -24,6 +24,7 @@ const highPriorityBtn = document.querySelector('#highPriorityBtn');
 const todayBtn = document.querySelector('#todayBtn');
 const upcomingBtn = document.querySelector('#upcomingBtn');
 const completedBtn = document.querySelector('#completedBtn');
+const completedCounter = document.querySelector('#completed-counter');
 const newProjectBtn = document.querySelector('#newProjectBtn');
 const newTaskBtn = document.querySelector('#newTaskBtn');
 
@@ -39,6 +40,7 @@ function setCurrentProject(projectName) {
 
 function loadSideBar() {
   clearContent(projectList);
+  updateCompletedCounter();
   loadSideBarProjects(projectController.getProjectNames());
 
   function loadSideBarProjects(projectNames) {
@@ -72,6 +74,11 @@ function loadSideBar() {
       }
     });
   }
+}
+
+function updateCompletedCounter() {
+  completedCounter.textContent =
+    projectController.getAllCompletedTasks().completedTaskArray.length;
 }
 
 function loadMainContentProjects(
@@ -132,6 +139,7 @@ function loadMainContentProjects(
 
       // Set class with task priority
       taskElement.classList.add(task.getPriority());
+      taskElement.style['animation-delay'] = `${taskIndex * 0.1}s`;
 
       taskElement.append(
         taskCheckBox,
@@ -236,6 +244,7 @@ function loadMainContentTasks(
 
       // Set class with task priority
       taskElement.classList.add(taskArray[i].getPriority());
+      taskElement.style['animation-delay'] = `${i * 0.1}s`;
 
       taskElement.append(
         taskCheckBox,
@@ -312,6 +321,7 @@ function createTaskElements(task, project, taskID) {
   // Event Listeners
   taskCheckBox.addEventListener('change', (event) => {
     task.toggleComplete();
+    updateCompletedCounter();
   });
 
   editTaskBtn.addEventListener('click', (event) => {
@@ -382,7 +392,7 @@ function loadProjectPopup(project) {
     'Project Name',
     true
   );
-  const nameLabel = createLabel('Project Name', nameInput);
+  const nameLabel = createLabel('Project Name*', nameInput);
 
   const descriptionInput = document.createElement('textarea');
   setInputValues(
@@ -395,27 +405,80 @@ function loadProjectPopup(project) {
   );
   const descriptionLabel = createLabel('Project Description', descriptionInput);
 
-  const projectColorInput = document.createElement('input');
-  projectColorInput.setAttribute('type', 'color');
-  projectColorInput.setAttribute('name', 'project-color');
-  projectColorInput.setAttribute('id', 'project-color');
-  const colorLabel = createLabel('Project Color', projectColorInput);
+  // Color input
+  // const projectColorInput = document.createElement('input');
+  // projectColorInput.setAttribute('type', 'color');
+  // projectColorInput.setAttribute('name', 'project-color');
+  // projectColorInput.setAttribute('id', 'project-color');
+  // const colorLabel = createLabel('Project Color', projectColorInput);
+
+  const colorData = [
+    ['Red', '#ff0000'],
+    ['Green', '#008000'],
+  ];
+
+  const projectColorInput = document.createElement('div');
+  const colorLabel = createLabel('Project Color', 'project-color');
+  projectColorInput.classList.add('radio-toolbar');
+
+  // Color 1
+  const colorInput1 = document.createElement('input');
+  setInputValues(colorInput1, 'radio', 'project-color', 'color1');
+  const colorLabel1 = createLabel('', 'color1');
+  colorInput1.setAttribute('color', colorData[0][1]);
+  document.body.style.setProperty('--project-color-1', colorData[0][1]);
+
+  // Color 2
+  const colorInput2 = document.createElement('input');
+  setInputValues(colorInput2, 'radio', 'project-color', 'color2');
+  const colorLabel2 = createLabel('', 'color2');
+  colorInput2.setAttribute('color', colorData[1][1]);
+  document.body.style.setProperty('--project-color-2', colorData[1][1]);
+
+  // Custom Color
+  const colorInputCustom = document.createElement('input');
+  setInputValues(colorInputCustom, 'radio', 'project-color', 'colorCustom');
+  const colorLabelCustom = createLabel('Custom Color', 'colorCustom');
+
+  // Color Input box
+  const customColorInput = document.createElement('input');
+  customColorInput.setAttribute('type', 'color');
+  projectColorInput.setAttribute('name', 'custom-color');
+  projectColorInput.setAttribute('id', 'custom-color');
+
+  projectColorInput.append(
+    colorInput1,
+    colorLabel1,
+    colorInput2,
+    colorLabel2,
+    colorInputCustom,
+    colorLabelCustom,
+    customColorInput
+  );
 
   const submitProjectBtn = createSubmitBtn();
 
   if (project !== undefined) {
     nameInput.value = project.getProjectTitle();
     descriptionInput.value = project.getProjectDescription();
-    projectColorInput.value = project.getColor();
+    // projectColorInput.value = project.getColor();
   }
 
   // Submit project data
   projectForm.onsubmit = (event) => {
     event.preventDefault();
+    const checkedID = document.querySelector(
+      'input[name="project-color"]:checked'
+    ).id;
+    const selectedColor = document
+      .querySelector('input[name="project-color"]:checked')
+      .getAttribute('color');
+
     const newProject = projectModule.project(
       nameInput.value,
       descriptionInput.value,
-      projectColorInput.value
+      // projectColorInput.value
+      selectedColor
     );
 
     if (project === undefined) {
@@ -434,7 +497,7 @@ function loadProjectPopup(project) {
       // 3) set project color
       projectController.projectArray[
         projectController.projectIndex(project.getProjectTitle())
-      ].setColor(projectColorInput.value);
+      ].setColor(selectedColor);
     }
 
     loadSideBar();
@@ -477,7 +540,7 @@ function loadTaskPopup(task) {
   // Task name input
   const nameInput = document.createElement('input');
   setInputValues(nameInput, 'text', 'task', 'task-name', 'Task Name', true);
-  const nameLabel = createLabel('Task Name', nameInput);
+  const nameLabel = createLabel('Task Name*', nameInput);
 
   // Task description input
   const descriptionInput = document.createElement('textarea');
@@ -543,10 +606,10 @@ function loadTaskPopup(task) {
 
   taskForm.onsubmit = (event) => {
     event.preventDefault();
-    // create to-do item
     const checkedID = document.querySelector(
       'input[name="priority"]:checked'
     ).id;
+    // create to-do item
     const newToDoItem = toDoItemModule.toDoItem(
       nameInput.value,
       descriptionInput.value,
