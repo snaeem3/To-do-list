@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Raleway&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Libre+Franklin&display=swap");
 
 :root {
   --section-padding: 8px;
@@ -20,7 +20,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Raleway", sans-serif;
+  font-family: "Libre Franklin", sans-serif;
 }
 
 button,
@@ -164,7 +164,8 @@ button[data-tool-tip]:not(:disabled):hover::after {
 }
 
 /* Make text readable over any color */
-.project-name-btn {
+.project-name-btn,
+.project-btn {
   text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
 }
 /* Do not apply to tool-tip */
@@ -420,7 +421,7 @@ li.high {
   font-size: 1.5rem;
 }
 
-.description-checkbox-label:hover {
+.description-checkbox:not(:disabled) ~ .description-checkbox-label:hover {
   text-shadow: 1px 1px 2px var(--color-shadow);
 }
 
@@ -485,7 +486,8 @@ li.high {
   transition: transform ease-out 150ms, bottom ease-out 150ms;
 }
 
-.task-due-date[data-tool-tip]:hover::before {
+/* Only activate when pop is not active AKA main is the first child in body */
+main:is(:first-child) .task-due-date[data-tool-tip]:hover::before {
   transform: scale(1);
   bottom: 115%;
 }
@@ -509,7 +511,7 @@ li.high {
 }
 
 .pop-up {
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 50%;
   padding: 2rem 1rem;
@@ -571,12 +573,27 @@ label[for="high"] {
   background: var(--high-priority-color);
 }
 
+#custom-color label {
+  /* padding: 1rem 2rem; */
+  flex-grow: 1;
+  border-radius: var(--border-radius-default);
+  text-align: center;
+}
+
 label[for="color1"] {
   background: var(--project-color-1);
 }
 
 label[for="color2"] {
   background: var(--project-color-2);
+}
+
+label[for="color3"] {
+  background: var(--project-color-3);
+}
+
+label[for="color4"] {
+  background: var(--project-color-4);
 }
 
 label[for="colorCustom"] {
@@ -586,6 +603,17 @@ label[for="colorCustom"] {
 
 input[type="color"] {
   display: none;
+  appearance: none;
+  border-radius: var(--border-radius-default);
+  background-color: transparent;
+  border: none;
+  align-self: center;
+}
+input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+input[type="color"]::-webkit-color-swatch {
+  border: none;
 }
 
 #colorCustom:checked ~ input {

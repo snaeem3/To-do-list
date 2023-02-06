@@ -413,8 +413,10 @@ function loadProjectPopup(project) {
   // const colorLabel = createLabel('Project Color', projectColorInput);
 
   const colorData = [
+    ['White', '#FFFFFF'],
     ['Red', '#ff0000'],
     ['Green', '#008000'],
+    ['Blue', '#0000ff'],
   ];
 
   const projectColorInput = document.createElement('div');
@@ -435,11 +437,25 @@ function loadProjectPopup(project) {
   colorInput2.setAttribute('color', colorData[1][1]);
   document.body.style.setProperty('--project-color-2', colorData[1][1]);
 
+  // Color 3
+  const colorInput3 = document.createElement('input');
+  setInputValues(colorInput3, 'radio', 'project-color', 'color3');
+  const colorLabel3 = createLabel('', 'color3');
+  colorInput3.setAttribute('color', colorData[2][1]);
+  document.body.style.setProperty('--project-color-3', colorData[2][1]);
+
+  // Color 4
+  const colorInput4 = document.createElement('input');
+  setInputValues(colorInput4, 'radio', 'project-color', 'color4');
+  const colorLabel4 = createLabel('', 'color4');
+  colorInput4.setAttribute('color', colorData[3][1]);
+  document.body.style.setProperty('--project-color-4', colorData[3][1]);
+
   // Custom Color
   const colorInputCustom = document.createElement('input');
   setInputValues(colorInputCustom, 'radio', 'project-color', 'colorCustom');
   const colorLabelCustom = createLabel('Custom', 'colorCustom');
-  colorLabelCustom.setAttribute('color', '#FFFFFF'); // set default color to white
+  document.body.style.setProperty('--project-color-custom', '#000000'); // set initial background color
 
   // Color Input box
   const customColorInput = document.createElement('input');
@@ -467,6 +483,10 @@ function loadProjectPopup(project) {
     colorLabel1,
     colorInput2,
     colorLabel2,
+    colorInput3,
+    colorLabel3,
+    colorInput4,
+    colorLabel4,
     colorInputCustom,
     colorLabelCustom,
     customColorInput
@@ -485,6 +505,10 @@ function loadProjectPopup(project) {
       colorInput1.checked = true;
     } else if (savedColor === colorData[1][1]) {
       colorInput2.checked = true;
+    } else if (savedColor === colorData[2][1]) {
+      colorInput3.checked = true;
+    } else if (savedColor === colorData[3][1]) {
+      colorInput4.checked = true;
     } else {
       colorInputCustom.checked = true;
       colorLabelCustom.setAttribute('color', savedColor);
@@ -686,6 +710,7 @@ function loadTaskPopup(task) {
   taskPopup.append(taskForm);
 
   body.prepend(taskPopup);
+  populateStorage();
 }
 
 function setInputValues(input, type, name, id, placeholder, required = false) {
@@ -923,6 +948,12 @@ function loadDefaultEventListeners() {
       taskParams[3]
     );
   });
+}
+
+function populateStorage() {
+  localStorage.projectArray = JSON.stringify(
+    projectController.getProjectArray()
+  );
 }
 
 export { loadSideBar, loadMainContentProjects, loadDefaultEventListeners };
