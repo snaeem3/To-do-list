@@ -438,13 +438,29 @@ function loadProjectPopup(project) {
   // Custom Color
   const colorInputCustom = document.createElement('input');
   setInputValues(colorInputCustom, 'radio', 'project-color', 'colorCustom');
-  const colorLabelCustom = createLabel('Custom Color', 'colorCustom');
+  const colorLabelCustom = createLabel('Custom', 'colorCustom');
+  colorLabelCustom.setAttribute('color', '#FFFFFF'); // set default color to white
 
   // Color Input box
   const customColorInput = document.createElement('input');
   customColorInput.setAttribute('type', 'color');
   projectColorInput.setAttribute('name', 'custom-color');
   projectColorInput.setAttribute('id', 'custom-color');
+
+  // Color Input Event Listener
+  customColorInput.addEventListener('input', (event) => {
+    document.body.style.setProperty(
+      '--project-color-custom',
+      event.target.value
+    );
+    colorInputCustom.setAttribute('color', event.target.value);
+  });
+  customColorInput.addEventListener('change', (event) => {
+    colorLabelCustom.style.backgroundColor = event.target.value;
+  });
+
+  // Default checked value
+  colorInput1.checked = true;
 
   projectColorInput.append(
     colorInput1,
@@ -459,9 +475,22 @@ function loadProjectPopup(project) {
   const submitProjectBtn = createSubmitBtn();
 
   if (project !== undefined) {
+    // Load saved data
     nameInput.value = project.getProjectTitle();
     descriptionInput.value = project.getProjectDescription();
     // projectColorInput.value = project.getColor();
+
+    const savedColor = project.getColor();
+    if (savedColor === colorData[0][1]) {
+      colorInput1.checked = true;
+    } else if (savedColor === colorData[1][1]) {
+      colorInput2.checked = true;
+    } else {
+      colorInputCustom.checked = true;
+      colorLabelCustom.setAttribute('color', savedColor);
+      colorLabelCustom.style.backgroundColor = savedColor;
+      customColorInput.value = savedColor;
+    }
   }
 
   // Submit project data
@@ -470,9 +499,13 @@ function loadProjectPopup(project) {
     const checkedID = document.querySelector(
       'input[name="project-color"]:checked'
     ).id;
-    const selectedColor = document
+    let selectedColor = document
       .querySelector('input[name="project-color"]:checked')
       .getAttribute('color');
+
+    if (selectedColor === null) {
+      selectedColor = document.querySelector('input[type="color"]').value;
+    }
 
     const newProject = projectModule.project(
       nameInput.value,
