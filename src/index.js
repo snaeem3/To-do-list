@@ -108,19 +108,49 @@ import { project1, project2, project3 } from './sampleProjects.js';
 // });
 
 if (storageAvailable('localStorage')) {
-  // Yippee! We can use localStorage awesomeness
-  //   const projectArray = JSON.parse(localStorage.getItem('projectArray')) || [];
-  //   projectArray.forEach((project) => {
-  //     projectController.addProject(project);
-  //   });
-} else {
-  // Too bad, no localStorage for us
-}
-projectController.addProject(project1);
-projectController.addProject(project2);
-projectController.addProject(project3);
+  if (localStorage.length === 0) {
+    projectController.addProject(project1);
+    projectController.addProject(project2);
+    projectController.addProject(project3);
 
-projectController.addGeneralProject();
+    projectController.addGeneralProject();
+  }
+
+  const projectArray = JSON.parse(localStorage.getItem('projectArray')) || [];
+  // Add each project to project controller
+  projectArray.forEach((projectData) => {
+    const taskData = projectData.projectItems;
+    const toDoArray = [];
+    // Add each task to toDoArray
+    taskData.forEach((taskDataItem) => {
+      toDoArray.push(
+        toDoItemModule.toDoItem(
+          taskDataItem.taskTitle,
+          taskDataItem.taskDescription,
+          new Date(taskDataItem.taskDueDate),
+          taskDataItem.taskPriority,
+          taskDataItem.taskCompleteStatus
+        )
+      );
+    });
+    const project = projectModule.project(
+      projectData.projectTitle,
+      projectData.projectDescription,
+      projectData.projectColor,
+      toDoArray
+    );
+
+    projectController.addProject(project);
+  });
+} else {
+  console.warn('No local storage available');
+  projectController.addProject(project1);
+  projectController.addProject(project2);
+  projectController.addProject(project3);
+
+  projectController.addGeneralProject();
+}
+
 displayController.loadSideBar();
 displayController.loadMainContentProjects('General');
 displayController.loadDefaultEventListeners();

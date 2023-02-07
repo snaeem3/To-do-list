@@ -101,6 +101,20 @@ export const project = (
     }
   }
 
+  function getToDoStorageArray() {
+    const storageArray = [];
+    for (let i = 0; i < numTasks(); i += 1) {
+      storageArray[i] = {
+        taskTitle: toDoArray[i].getTitle(),
+        taskDescription: toDoArray[i].getDescription,
+        taskDueDate: toDoArray[i].getDueDate(),
+        taskPriority: toDoArray[i].getPriority(),
+        taskCompleteStatus: toDoArray[i].isComplete(),
+      };
+    }
+    return storageArray;
+  }
+
   return {
     getProjectTitle,
     getProjectDescription,
@@ -120,5 +134,6 @@ export const project = (
     getTodayTasks,
     getBeforeTasks,
     // getPrioritySortedTasks,
+    getToDoStorageArray,
   };
 };

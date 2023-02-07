@@ -3,7 +3,16 @@ import * as projectModule from './project.js';
 const projectArray = [];
 
 function getProjectArray() {
-  return projectArray;
+  const storageArray = [];
+  for (let i = 0; i < projectArray.length; i++) {
+    storageArray[i] = {
+      projectTitle: projectArray[i].getProjectTitle(),
+      projectDescription: projectArray[i].getProjectDescription(),
+      projectColor: projectArray[i].getColor(),
+      projectItems: projectArray[i].getToDoStorageArray(),
+    };
+  }
+  return storageArray;
 }
 
 function getProjectNames() {
@@ -21,12 +30,12 @@ function addProject(project) {
   projectArray.push(project);
 }
 
-function addGeneralProject() {
+function addGeneralProject(generalTasks = []) {
   addProject(
     projectModule.project(
       'General',
       'Keep track of your general tasks here!',
-      []
+      generalTasks
     )
   );
 }

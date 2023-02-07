@@ -322,6 +322,7 @@ function createTaskElements(task, project, taskID) {
   taskCheckBox.addEventListener('change', (event) => {
     task.toggleComplete();
     updateCompletedCounter();
+    populateStorage();
   });
 
   editTaskBtn.addEventListener('click', (event) => {
@@ -337,6 +338,7 @@ function createTaskElements(task, project, taskID) {
 
     // loadMainContentProjects(project.getProjectTitle());
     reloadContentBody();
+    populateStorage();
   });
 
   return {
@@ -561,6 +563,7 @@ function loadProjectPopup(project) {
     reloadContentBody();
     // loadMainContentProjects(newProject.getProjectTitle());
     closePopup(projectPopup);
+    populateStorage();
   };
   const closeProjectFormBtn = createCloseFormBtn(projectPopup);
 
@@ -689,6 +692,7 @@ function loadTaskPopup(task) {
     reloadContentBody();
     // loadMainContentProjects(currentProject.getProjectTitle());
     closePopup(taskPopup);
+    populateStorage();
   };
 
   const closeTaskFormBtn = createCloseFormBtn(taskPopup);
@@ -710,7 +714,6 @@ function loadTaskPopup(task) {
   taskPopup.append(taskForm);
 
   body.prepend(taskPopup);
-  populateStorage();
 }
 
 function setInputValues(input, type, name, id, placeholder, required = false) {
@@ -855,6 +858,7 @@ function loadDefaultEventListeners() {
     projectController.deleteProject(currentProject.getProjectTitle());
     loadMainContentProjects('General');
     loadSideBar();
+    populateStorage();
   });
 
   hideCompletedInput.addEventListener('change', (event) => {
