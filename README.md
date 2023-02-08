@@ -2,6 +2,8 @@
 
 ## [Live View](https://snaeem3.github.io/To-do-list/)
 
+![To-Do list](https://user-images.githubusercontent.com/11710951/217423351-e9d2b955-63ae-4054-baff-43cb63831190.PNG)
+
 This project showcases a To-Do list app to keep track of your personal projects and tasks as a part of the [Odin Project](https://www.theodinproject.com/lessons/node-path-javascript-todo-list)
 
 Project Features:
