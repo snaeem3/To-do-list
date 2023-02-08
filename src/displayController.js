@@ -1,5 +1,5 @@
 /* eslint-disable default-case */
-import { format, isWithinInterval, addDays, isValid } from 'date-fns';
+import { format, addDays, isValid } from 'date-fns';
 import * as projectController from './projectController.js';
 import * as toDoItemModule from './todoListItem.js';
 import * as projectModule from './project.js';
@@ -34,7 +34,6 @@ let recentType = 'project';
 
 function setCurrentProject(projectName) {
   currentProject = projectController.getProject(projectName);
-  // currentProject = projectName;
 }
 
 function loadSideBar() {
@@ -132,8 +131,6 @@ function loadMainContentProjects(
         taskDueDate,
         taskPriority,
         buttonContainer,
-        // editTaskBtn,
-        // deleteTaskBtn,
       } = createTaskElements(task, project, taskIndex);
 
       // Set class with task priority
@@ -144,13 +141,9 @@ function loadMainContentProjects(
         taskCheckBox,
         descriptionCheckBox,
         descriptionCheckBoxLabel,
-        // taskName,
         taskDescription,
         taskDueDate,
-        // taskPriority,
         buttonContainer
-        // editTaskBtn,
-        // deleteTaskBtn
       );
 
       parentUl.appendChild(taskElement);
@@ -214,8 +207,6 @@ function loadMainContentTasks(
         taskDueDate,
         taskPriority,
         buttonContainer,
-        // editTaskBtn,
-        // deleteTaskBtn,
       } = createTaskElements(
         taskArray[i],
         projectController.projectArray[associatedProject[i]],
@@ -246,14 +237,9 @@ function loadMainContentTasks(
         taskCheckBox,
         descriptionCheckBox,
         descriptionCheckBoxLabel,
-        // taskName,
         taskDescription,
         taskDueDate,
-        // taskPriority,
         buttonContainer
-        // projectBtn,
-        // editTaskBtn,
-        // deleteTaskBtn
       );
 
       parentUl.appendChild(taskElement);
@@ -347,8 +333,6 @@ function createTaskElements(task, project, taskID) {
     taskDueDate,
     taskPriority,
     buttonContainer,
-    // editTaskBtn,
-    // deleteTaskBtn,
   };
 
   function createCheckBox(inputProject, inputTask) {
@@ -361,9 +345,6 @@ function createTaskElements(task, project, taskID) {
 }
 
 function hideDateRangeElements() {
-  // dateRangeInput.style.display = 'none';
-  // dateRangeOutput.style.display = 'none';
-  // dateRangeLabel.style.display = 'none';
   dateRangeContainer.style.display = 'none';
 }
 
@@ -550,7 +531,6 @@ function loadProjectPopup(project) {
 
     loadSideBar();
     reloadContentBody();
-    // loadMainContentProjects(newProject.getProjectTitle());
     closePopup(projectPopup);
     populateStorage();
   };
@@ -742,7 +722,6 @@ function createCloseFormBtn(parentPopup) {
 
 function closePopup(popup, btn) {
   popup.remove();
-  // btn.disabled = false;
   enableAllButtons();
   enableAllInputs();
 }
