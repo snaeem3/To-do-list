@@ -154,7 +154,6 @@ if (storageAvailable('localStorage')) {
 displayController.loadSideBar();
 displayController.loadMainContentProjects('General');
 displayController.loadDefaultEventListeners();
-// displayController.loadTaskPopup();
 
 function storageAvailable(type) {
   let storage;

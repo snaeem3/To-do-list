@@ -7,7 +7,6 @@ import getPrioritySortedTasks from './taskSort.js';
 
 const body = document.querySelector('body');
 const projectList = document.querySelector('#project-list');
-const projectInfo = document.querySelector('#project-info');
 const contentHeader = document.querySelector('#content-header');
 const contentDescription = document.querySelector('#content-description');
 const editProjectBtn = document.querySelector('#edit-project-btn');
@@ -181,9 +180,6 @@ function loadMainContentTasks(
   hideDateRangeElements();
   if (recentType === 'upcoming') {
     // Show upcoming days slider
-    // dateRangeInput.style.display = 'block';
-    // dateRangeOutput.style.display = 'block';
-    // dateRangeLabel.style.display = 'block';
     dateRangeContainer.style.display = 'flex';
   }
 
@@ -406,13 +402,6 @@ function loadProjectPopup(project) {
     false
   );
   const descriptionLabel = createLabel('Project Description', descriptionInput);
-
-  // Color input
-  // const projectColorInput = document.createElement('input');
-  // projectColorInput.setAttribute('type', 'color');
-  // projectColorInput.setAttribute('name', 'project-color');
-  // projectColorInput.setAttribute('id', 'project-color');
-  // const colorLabel = createLabel('Project Color', projectColorInput);
 
   const colorData = [
     ['White', '#FFFFFF'],
@@ -689,8 +678,8 @@ function loadTaskPopup(task) {
       task.setDueDate(new Date(dateInput.value));
       task.setPriority(checkedID);
     }
+
     reloadContentBody();
-    // loadMainContentProjects(currentProject.getProjectTitle());
     closePopup(taskPopup);
     populateStorage();
   };

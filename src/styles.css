@@ -305,6 +305,31 @@ button[data-tool-tip]:not(:disabled):hover::after {
   gap: 0.5rem;
 }
 
+input[type="range"] {
+  width: 100%;
+  background: transparent;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  border-radius: var(--border-radius-default);
+  background: white;
+}
+
+input[type="range"]:focus {
+  outline: none;
+}
+
+input[type="range"]::-ms-track {
+  width: 100%;
+  cursor: pointer;
+
+  /* Hides the slider so custom styles can be added */
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+
 #date-range-output {
   font-size: 2rem;
 }
@@ -503,6 +528,10 @@ main:is(:first-child) .task-due-date[data-tool-tip]:hover::before {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+.project-btn:not(:disabled):hover {
+  outline: solid 1px black;
 }
 
 .edit-task-btn,
