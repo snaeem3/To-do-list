@@ -25,7 +25,7 @@ Project Features:
 Skills involved with this project:
 
 - Javascript
-  - Local Storage storing and retrieving
+  - Local Storage storing and retrieving with JSON
   - ES6 Modules
   - Objects
   - Factory functions
@@ -36,9 +36,7 @@ Skills involved with this project:
   - Event listeners
   - Pop-up elements
   - Data filtering (hide completed tasks)
-  - Sorting
-    - Sort by priority (high/medium/low)
-    - Sort by date
+  - Sorting by priority (high/medium/low)
 - CSS
   - Responsive design for portrait/landscape screens
   - Toolbar tips
